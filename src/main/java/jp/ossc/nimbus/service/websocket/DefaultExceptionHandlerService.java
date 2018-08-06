@@ -61,87 +61,70 @@ public class DefaultExceptionHandlerService extends ServiceBase implements Defau
     protected EditorFinder exceptionEditorFinder;
     protected boolean isThrowException;
 
-    @Override
     public void setJournalServiceName(ServiceName name) {
         journalServiceName = name;
     }
 
-    @Override
     public ServiceName getJournalServiceName() {
         return journalServiceName;
     }
 
-    @Override
     public void setLogMessageCode(String code) {
         logMessageCode = code;
     }
 
-    @Override
     public String getLogMessageCode() {
         return logMessageCode;
     }
 
-    @Override
     public void setLogMessageArguments(String[] args) {
         logMessageArguments = args;
     }
 
-    @Override
     public String[] getLogMessageArguments() {
         return logMessageArguments;
     }
 
-    @Override
     public void setOutputStackTraceLog(boolean isOutput) {
         isOutputStackTraceLog = isOutput;
     }
 
-    @Override
     public boolean isOutputStackTraceLog() {
         return isOutputStackTraceLog;
     }
 
-    @Override
     public boolean isOutputSessionProperty() {
         return isOutputSessionProperty;
     }
 
-    @Override
     public void setOutputSessionProperty(boolean isOutput) {
         isOutputSessionProperty = isOutput;
     }
 
-    @Override
     public void setExceptionJournalKey(String key) {
         exceptionJournalKey = key;
     }
 
-    @Override
     public String getExceptionJournalKey() {
         return exceptionJournalKey;
     }
 
-    @Override
     public void setExceptionEditorFinderServiceName(ServiceName name) {
         exceptionEditorFinderServiceName = name;
     }
 
-    @Override
     public ServiceName getExceptionEditorFinderServiceName() {
         return exceptionEditorFinderServiceName;
     }
 
-    @Override
     public void setThrowException(boolean isThrow) {
         isThrowException = isThrow;
     }
 
-    @Override
     public boolean isThrowException() {
         return isThrowException;
     }
 
-    @Override
     public void startService() throws Exception {
         if (journalServiceName != null) {
             journal = (Journal) ServiceManagerFactory.getServiceObject(journalServiceName);
@@ -153,7 +136,6 @@ public class DefaultExceptionHandlerService extends ServiceBase implements Defau
         }
     }
 
-    @Override
     public void handleException(Session session, Throwable th)  throws Throwable {
         if (logMessageCode != null) {
             final Logger log = super.getLogger();

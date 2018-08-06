@@ -31,7 +31,9 @@
  */
 package jp.ossc.nimbus.service.publish.websocket;
 
+import jp.ossc.nimbus.core.ServiceBaseMBean;
 import jp.ossc.nimbus.core.ServiceName;
+import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
 
 /**
  * {@link AbstractJMSMessageDispatcherService}のMBeanインタフェース
@@ -39,7 +41,79 @@ import jp.ossc.nimbus.core.ServiceName;
  *
  * @author M.Ishida
  */
-public interface AbstractJMSMessageDispatcherServiceMBean extends AbstractPublishMessageDispatcherServiceMBean {
+public interface AbstractJMSMessageDispatcherServiceMBean extends ServiceBaseMBean {
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズのデフォルト値。
+     *
+     */
+    public static final int DEFAULT_MESSAGE_SEND_PARAMETER_RECYCLE_LIST_SIZE = -1;
+    
+    /**
+     * データ送信時にエラーが発生した際に出力するメッセージIDのデフォルト値。
+     * <p>
+     */
+    public static final String DEFAULT_SEND_ERROR_MESSAGE_ID = "WS___00006";
+
+    /**
+     * メッセージ配信を受信するためのQueueHandlerContainerのサービス名を取得する。
+     *
+     * @return サービス名
+     */
+    public ServiceName getMessageListenerQueueHandlerContainerServiceName();
+
+    /**
+     * メッセージ配信を受信するためのQueueHandlerContainerのサービス名を設定する。
+     *
+     * @param name サービス名
+     */
+    public void setMessageListenerQueueHandlerContainerServiceName(ServiceName name);
+
+    /**
+     * メッセージ配信を受信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を取得する
+     * 。
+     *
+     * @return サービス名
+     */
+    public ServiceName getMessageListenerQueueSelectorServiceName();
+
+    /**
+     * メッセージ配信を受信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を設定する
+     * 。
+     *
+     * @param name サービス名
+     */
+    public void setMessageListenerQueueSelectorServiceName(ServiceName name);
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerのサービス名を取得する。
+     *
+     * @return サービス名
+     */
+    public ServiceName getMessageSendQueueHandlerContainerServiceName();
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerのサービス名を設定する。
+     *
+     * @param name サービス名
+     */
+    public void setMessageSendQueueHandlerContainerServiceName(ServiceName name);
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を取得する
+     * 。
+     *
+     * @return サービス名
+     */
+    public ServiceName getMessageSendQueueSelectorServiceName();
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を設定する
+     * 。
+     *
+     * @param name サービス名
+     */
+    public void setMessageSendQueueSelectorServiceName(ServiceName name);
 
     /**
      * JMSメッセージを受信するためのJmsMessageConsumerFactoryServiceのサービス名を取得する。
@@ -96,4 +170,18 @@ public interface AbstractJMSMessageDispatcherServiceMBean extends AbstractPublis
      */
     public void stopReceive() throws Exception;
 
+    /**
+     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズを取得する。
+     *
+     * @return リストサイズ
+     */
+    public int getMessageSendParameterRecycleListSize();
+
+    /**
+     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズを設定する。
+     * デフォルトは {@link #DEFAULT_MESSAGE_SEND_PARAMETER_RECYCLE_LIST_SIZE} 。
+     *
+     * @param size リストサイズ
+     */
+    public void setMessageSendParameterRecycleListSize(int size);
 }

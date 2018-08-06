@@ -68,92 +68,74 @@ public class DefaultConfiguratorService extends Configurator implements ServiceB
     protected ServiceBase service;
     protected Context threadContext;
 
-    @Override
     public ServiceName getEndpointServiceName() {
         return endpointServiceName;
     }
 
-    @Override
     public void setEndpointServiceName(ServiceName name) {
         endpointServiceName = name;
     }
 
-    @Override
     public ServiceName getThreadContextServiceName() {
         return threadContextServiceName;
     }
 
-    @Override
     public void setThreadContextServiceName(ServiceName name) {
         threadContextServiceName = name;
     }
 
-    @Override
     public String getPath() {
         return path;
     }
 
-    @Override
     public void setPath(String path) {
         this.path = path;
     }
 
-    @Override
     public String getIdKey() {
         return idKey;
     }
 
-    @Override
     public void setIdKey(String key) {
         idKey = key;
     }
 
-    @Override
     public String getTicketKey() {
         return ticketKey;
     }
 
-    @Override
     public void setTicketKey(String key) {
         ticketKey = key;
     }
 
-    @Override
     public String getContextIpKey() {
         return contextIpKey;
     }
 
-    @Override
     public void setContextIpKey(String key) {
         contextIpKey = key;
     }
 
-    @Override
     public String getContextPortKey() {
         return contextPortKey;
     }
 
-    @Override
     public void setContextPortKey(String key) {
         contextPortKey = key;
     }
 
-    @Override
     public Class getEndpointClass() throws ClassNotFoundException {
         ServiceMetaData metaData = ServiceManagerFactory.getServiceMetaData(getEndpointServiceName());
         return Utility.convertStringToClass(metaData.getCode());
     }
 
-    @Override
     public void setServiceBase(ServiceBase service) {
         this.service = service;
     }
 
-    @Override
     public void createService() throws Exception {
     }
 
-    @Override
     public void startService() throws Exception {
         if (path == null || "".equals(path)) {
             throw new IllegalArgumentException("Path is null or Empty.");
@@ -167,21 +149,17 @@ public class DefaultConfiguratorService extends Configurator implements ServiceB
         threadContext = (Context) ServiceManagerFactory.getServiceObject(threadContextServiceName);
     }
 
-    @Override
     public void stopService() throws Exception {
     }
 
-    @Override
     public void destroyService() throws Exception {
     }
 
-    @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
         // Endpointサービスオブジェクトを返却する。
         return (T) ServiceManagerFactory.getServiceObject(endpointServiceName);
     }
 
-    @Override
     public void modifyHandshake(ServerEndpointConfig sec, HandshakeRequest request, HandshakeResponse response) {
 
         String id = null;

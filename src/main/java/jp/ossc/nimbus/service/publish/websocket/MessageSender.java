@@ -47,7 +47,7 @@ public interface MessageSender {
      *
      * @param msg 配信するメッセージオブジェクト
      */
-    public void sendMessage(Object msg) throws Exception;
+    public void sendMessage(Object msg);
 
     /**
      * WebSocketのSessionを取得する。

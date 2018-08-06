@@ -74,7 +74,6 @@ public class SimpleTicketAuthenticatorService extends ServiceBase implements Sim
 
     protected CryptParameters wsCipher;
 
-    @Override
     public void setTicketMapping(String id, String ticket) {
         if (idAndTicketMapping == null) {
             idAndTicketMapping = new HashMap();
@@ -82,107 +81,86 @@ public class SimpleTicketAuthenticatorService extends ServiceBase implements Sim
         idAndTicketMapping.put(id, ticket);
     }
 
-    @Override
     public String getTicketMapping(String id) {
         return idAndTicketMapping == null ? null : (String)idAndTicketMapping.get(id);
     }
 
-    @Override
     public Map getTicketMappings() {
         return idAndTicketMapping;
     }
 
-    @Override
     public String getIdKey() {
         return idKey;
     }
 
-    @Override
     public void setIdKey(String key) {
         idKey = key;
     }
 
-    @Override
     public String getTicketKey() {
         return ticketKey;
     }
 
-    @Override
     public void setTicketKey(String key) {
         ticketKey = key;
     }
 
-    @Override
     public byte[] getKey() {
         return key;
     }
 
-    @Override
     public void setKey(byte[] keyBytes) {
         key = keyBytes;
     }
 
-    @Override
     public String getAlgorithm() {
         return algorithm;
     }
 
-    @Override
     public void setAlgorithm(String paramAlgorithm) {
         algorithm = paramAlgorithm;
     }
 
-    @Override
     public String getTransformation() {
         return transformation;
     }
 
-    @Override
     public void setTransformation(String paramTransformation) {
         transformation = paramTransformation;
     }
 
-    @Override
     public int getIvLength() {
         return ivLength;
     }
 
-    @Override
     public void setIvLength(int length) {
         ivLength = length;
     }
 
-    @Override
     public String getProvider() {
         return provider;
     }
 
-    @Override
     public void setProvider(String paramProvider) {
         provider = paramProvider;
     }
 
-    @Override
     public String getHashKey() {
         return hashKey;
     }
 
-    @Override
     public void setHashKey(String hash) {
         hashKey = hash;
     }
 
-    @Override
     public long getOverLimitTime() {
         return overLimitTime;
     }
 
-    @Override
     public void setOverLimitTime(long time) {
         overLimitTime = time;
     }
 
-    @Override
     public void startService() throws Exception {
         wsCipher = new CryptParameters(key, algorithm, transformation, ivLength, provider, hashKey);
     }

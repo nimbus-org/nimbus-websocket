@@ -63,27 +63,22 @@ public class ExceptionHandlerMappingService extends ServiceBase implements Excep
     protected ServiceName defaultExceptionHandlerServiceName;
     protected ExceptionHandler defaultExceptionHandler;
 
-    @Override
     public void setExceptionAndHandlerMapping(Properties map) {
         exceptionAndHandlerMapping = map;
     }
 
-    @Override
     public Properties getExceptionAndHandlerMapping() {
         return exceptionAndHandlerMapping;
     }
 
-    @Override
     public void setDefaultExceptionHandlerServiceName(ServiceName name) {
         defaultExceptionHandlerServiceName = name;
     }
 
-    @Override
     public ServiceName getDefaultExceptionHandlerServiceName() {
         return defaultExceptionHandlerServiceName;
     }
 
-    @Override
     public void startService() throws Exception {
         final ClassLoader loader = NimbusClassLoader.getInstance();
         if (exceptionAndHandlerMapping != null) {

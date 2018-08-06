@@ -60,6 +60,8 @@ import jp.ossc.nimbus.service.sequence.Sequence;
 public abstract class AbstractMessageHandlerFactoryService extends ServiceFactoryServiceBase implements
         AbstractMessageHandlerFactoryServiceMBean {
 
+    private static final long serialVersionUID = 7528870886306565625L;
+    
     protected ServiceName webSocketAccessJournalServiceName;
     protected ServiceName editorFinderServiceName;
     protected ServiceName sequenceServiceName;
@@ -84,167 +86,134 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
 
     protected String messageEncoding = DEFAULT_ENCODE;
 
-    @Override
     public ServiceName getWebSocketAccessJournalServiceName() {
         return webSocketAccessJournalServiceName;
     }
 
-    @Override
     public void setWebSocketAccessJournalServiceName(ServiceName name) {
         webSocketAccessJournalServiceName = name;
     }
 
-    @Override
     public ServiceName getEditorFinderServiceName() {
         return editorFinderServiceName;
     }
 
-    @Override
     public void setEditorFinderServiceName(ServiceName name) {
         editorFinderServiceName = name;
     }
 
-    @Override
     public ServiceName getSequenceServiceName() {
         return sequenceServiceName;
     }
 
-    @Override
     public void setSequenceServiceName(ServiceName name) {
         sequenceServiceName = name;
     }
 
-    @Override
     public void setAccessJournalKey(String key) {
         accessJournalKey = key;
     }
 
-    @Override
     public String getAccessJournalKey() {
         return accessJournalKey;
     }
 
-    @Override
     public void setIdJournalKey(String key) {
         idJournalKey = key;
     }
 
-    @Override
     public String getIdJournalKey() {
         return idJournalKey;
     }
 
-    @Override
     public void setTicketJournalKey(String key) {
         ticketJournalKey = key;
     }
 
-    @Override
     public String getTicketJournalKey() {
         return ticketJournalKey;
     }
 
-    @Override
     public void setWebSocketSessionIdJournalKey(String key) {
         webSocketSessionIdJournalKey = key;
     }
 
-    @Override
     public String getWebSocketSessionIdJournalKey() {
         return webSocketSessionIdJournalKey;
     }
 
-    @Override
     public String getHttpSessionIdJournalKey() {
         return httpSessionIdJournalKey;
     }
 
-    @Override
     public void setHttpSessionIdJournalKey(String key) {
         httpSessionIdJournalKey = key;
     }
 
-    @Override
     public String getPathJournalKey() {
         return pathJournalKey;
     }
 
-    @Override
     public void setPathJournalKey(String key) {
         pathJournalKey = key;
     }
 
-    @Override
     public String getIpJournalKey() {
         return ipJournalKey;
     }
 
-    @Override
     public void setIpJournalKey(String key) {
         ipJournalKey = key;
     }
 
-    @Override
     public String getPortJournalKey() {
         return portJournalKey;
     }
 
-    @Override
     public void setPortJournalKey(String key) {
         portJournalKey = key;
     }
 
-    @Override
     public void setRequestMessageJournalKey(String key) {
         requestMessageJournalKey = key;
     }
 
-    @Override
     public String getRequestMessageJournalKey() {
         return requestMessageJournalKey;
     }
 
-    @Override
     public String getMessageEncoding() {
         return messageEncoding;
     }
 
-    @Override
     public void setMessageEncoding(String encoding) {
         this.messageEncoding = encoding;
     }
 
-    @Override
     public String getClientPingMessage() {
         return clientPingMessage;
     }
 
-    @Override
     public void setClientPingMessage(String message) {
         clientPingMessage = message;
     }
 
-    @Override
     public String getReturnPongMessage() {
         return returnPongMessage;
     }
 
-    @Override
     public void setReturnPongMessage(String message) {
         returnPongMessage = message;
     }
 
-    @Override
     public String getPingSendErrorMessageId() {
         return pingSendErrorMessageId;
     }
 
-    @Override
     public void setPingSendErrorMessageId(String messageId) {
         pingSendErrorMessageId = messageId;
     }
 
-    @Override
     protected void preStartService() throws Exception {
         super.preStartService();
         if (!Charset.isSupported(messageEncoding)) {
@@ -263,7 +232,6 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
         }
     }
 
-    @Override
     protected abstract Service createServiceInstance() throws Exception;
 
     /**
@@ -277,16 +245,16 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
     public abstract class AbstractMessageHandlerService extends ServiceBase implements
             MessageHandler.Whole<ByteBuffer>, SessionMessageHandler {
 
+        private static final long serialVersionUID = -2975198913271595182L;
+        
         protected Session session;
 
-        @Override
-        public void onOpen(Session session, EndpointConfig config) {
+            public void onOpen(Session session, EndpointConfig config) {
             this.session = session;
             onOpenProcess(session, config);
         }
 
-        @Override
-        public void onClose(Session session, CloseReason closeReason) {
+            public void onClose(Session session, CloseReason closeReason) {
             onCloseProcess(session, closeReason);
             try {
                 super.stopService();
@@ -294,12 +262,10 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
             }
         }
 
-        @Override
-        public void onError(Session session, Throwable thr) {
+            public void onError(Session session, Throwable thr) {
             onErrorProcess(session, thr);
         }
 
-        @Override
         public void onMessage(ByteBuffer msg) {
             String message = null;
             if (accessJournal != null) {

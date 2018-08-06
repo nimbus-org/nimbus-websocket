@@ -2,7 +2,6 @@ package jp.ossc.nimbus.service.publish.websocket;
 
 import java.util.Set;
 
-import jp.ossc.nimbus.service.publish.websocket.AbstractPublishMessageDispatcherService.MessageSendParameter;
 import jp.ossc.nimbus.service.queue.AbstractDistributedQueueSelectorService;
 
 /**
