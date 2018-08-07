@@ -41,6 +41,8 @@ import jp.ossc.nimbus.service.publish.MessageListener;
  */
 public class DefaultPublishMessageDispatcherService extends AbstractPublishMessageDispatcherService {
 
+    private static final long serialVersionUID = 6621517711501815100L;
+
     public void addKeyProcess(Object key, MessageListener listener) throws Exception {
         if(key instanceof String) {
             messageReceiver.addSubject(listener, (String)key);

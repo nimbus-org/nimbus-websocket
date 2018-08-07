@@ -13,6 +13,8 @@ import jp.ossc.nimbus.service.queue.AbstractDistributedQueueSelectorService;
 public class SessionIdMessageSendDistributedQueueSelectorService extends AbstractDistributedQueueSelectorService
         implements SessionIdMessageSendDistributedQueueSelectorServiceMBean {
 
+    private static final long serialVersionUID = 9116235892276821497L;
+
     protected Object getKey(Object obj) {
         MessageSendParameter param = (MessageSendParameter) obj;
         return param.getSender().getSession().getId();

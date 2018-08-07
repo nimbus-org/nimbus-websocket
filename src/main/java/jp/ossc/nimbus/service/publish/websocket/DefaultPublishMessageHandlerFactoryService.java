@@ -45,6 +45,8 @@ import jp.ossc.nimbus.service.websocket.SessionProperties;
  */
 public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishMessageHandlerFactoryService implements DefaultPublishMessageHandlerFactoryServiceMBean {
     
+    private static final long serialVersionUID = -1691923897073384591L;
+    
     protected String messageParseErrorId = "WS___00007";
     protected String messageKeyAddErrorId = "WS___00008";
     protected String messageKeyRemoveErrorId = "WS___00009";
@@ -99,7 +101,7 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
     }
 
     public void setRemoveKeyString(String string) {
-        removeKeyString = removeKeyString;
+        removeKeyString = string;
     }
 
     public String getMessageSeparatorString() {
@@ -128,6 +130,8 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
     
     public class DefaultPublishMessageHandlerService extends AbstractPublishMessageHandlerService {
         
+        private static final long serialVersionUID = 2787005752537088401L;
+
         protected void onMessageProcess(String message) {
             String[] args = message.split(messageSeparatorString);
             if (args.length < 2) {
@@ -165,8 +169,10 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
         }
         
         public void sendMessageProcess(Object msg) throws Exception {
-            byte[] bytes = messageEncoding == null ? msg.toString().getBytes() : msg.toString().getBytes(messageEncoding);
-            session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
+            if(session.isOpen()) {
+                byte[] bytes = messageEncoding == null ? msg.toString().getBytes() : msg.toString().getBytes(messageEncoding);
+                session.getBasicRemote().sendBinary(ByteBuffer.wrap(bytes));
+            }
         }
     }
 }
