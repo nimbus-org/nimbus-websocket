@@ -63,6 +63,10 @@ public interface DatabaseAuthenticatorServiceMBean extends AbstractAuthenticator
     
     public void setLoginSelectSql(String sql);
     
+    public String getLoginUpdateSql();
+
+    public void setLoginUpdateSql(String sql);
+    
     public String getLogoutUpdateSql();
     
     public void setLogoutUpdateSql(String sql);

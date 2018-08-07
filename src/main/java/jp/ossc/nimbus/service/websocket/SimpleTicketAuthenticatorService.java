@@ -61,7 +61,7 @@ public class SimpleTicketAuthenticatorService extends AbstractAuthenticatorServi
         return idAndTicketMapping;
     }
 
-    protected boolean login(String id, String ticket) throws Exception {
+    protected boolean login(String id, String ticket, String wsTicket) throws Exception {
         return ticket.equals(getTicketMapping(id));
     }
 

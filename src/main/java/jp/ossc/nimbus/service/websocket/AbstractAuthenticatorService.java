@@ -55,6 +55,7 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
     
     protected String idKey = DEFAULT_ID_KEY;
     protected String ticketKey = DEFAULT_TICKET_KEY;
+    protected String wsTicketKey = DEFAULT_WS_TICKET_KEY;
 
     protected byte[] key = DEFAULT_KEY;
     protected String algorithm = DEFAULT_ALGORITHM;
@@ -80,6 +81,14 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
 
     public void setTicketKey(String key) {
         ticketKey = key;
+    }
+    
+    public String getWsTicketKey() {
+        return wsTicketKey;
+    }
+
+    public void setWsTicketKey(String key) {
+        wsTicketKey = key;
     }
 
     public byte[] getKey() {
@@ -157,21 +166,21 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
         if (ticket == null) {
             throw new AuthenticateException("ticket is null");
         }
+        Map map = wsCipher.createParametersMap();
+        map.put(idKey, id);
+        map.put(ticketKey, ticket);
+        String wsTicket = wsCipher.encrypt(null, map);
         boolean loginResult = false;
         try {
-            loginResult = login(id, ticket);
+            loginResult = login(id, ticket, wsTicket);
         } catch(Exception e) {
             throw new AuthenticateException(e);
         }
         if (!loginResult) {
             throw new AuthenticateException("Did not authenticated : " + id);
         }
-        Map map = wsCipher.createParametersMap();
-        map.put(idKey, id);
-        map.put(ticketKey, ticket);
-        String wsTicket = null;
         try {
-            wsTicket = URLEncoder.encode(wsCipher.encrypt(null, map), "UTF-8");
+            wsTicket = URLEncoder.encode(wsTicket, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             throw new AuthenticateException(e);
         }
@@ -215,8 +224,8 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
         }
     }
     
-    protected abstract boolean login(String id, String ticket) throws Exception;
-
+    protected abstract boolean login(String id, String ticket, String wsTicket) throws Exception;
+    
     protected abstract void logout(String id, String ticket) throws Exception;
 
 }

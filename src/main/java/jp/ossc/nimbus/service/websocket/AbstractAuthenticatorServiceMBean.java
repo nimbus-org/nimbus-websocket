@@ -42,8 +42,8 @@ import jp.ossc.nimbus.core.ServiceBaseMBean;
 public interface AbstractAuthenticatorServiceMBean extends ServiceBaseMBean {
 
     public static final String DEFAULT_ID_KEY = "id";
-
     public static final String DEFAULT_TICKET_KEY = "ticket";
+    public static final String DEFAULT_WS_TICKET_KEY = "wsTicket";
 
     public static final byte[] DEFAULT_KEY = { 49, 113, 97, 122, 50, 119, 115, 120, 51, 101, 100, 99, 52, 114, 102,
             118, 53, 116, 103, 98, 54, 121, 104, 110, 55, 117, 106, 109, 56, 105, 107, 44 };
@@ -60,6 +60,10 @@ public interface AbstractAuthenticatorServiceMBean extends ServiceBaseMBean {
 
     public void setTicketKey(String key);
 
+    public String getWsTicketKey();
+
+    public void setWsTicketKey(String key);
+    
     public byte[] getKey();
 
     public void setKey(byte[] keyBytes);

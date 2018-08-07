@@ -60,6 +60,7 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
     protected PersistentManager persistentManager;
     
     protected String loginSelectSql;
+    protected String loginUpdateSql;
     protected String logoutUpdateSql;
     
     public ServiceName getConnectionFactoryServiceName() {
@@ -101,6 +102,14 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
     public void setLoginSelectSql(String sql) {
         loginSelectSql = sql;
     }
+    
+    public String getLoginUpdateSql() {
+        return loginUpdateSql;
+    }
+
+    public void setLoginUpdateSql(String sql) {
+        loginUpdateSql = sql;
+    }
 
     public String getLogoutUpdateSql() {
         return logoutUpdateSql;
@@ -134,7 +143,7 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
     }
     
     
-    protected boolean login(String id, String ticket) throws Exception {
+    protected boolean login(String id, String ticket, String wsTicket) throws Exception {
         if(loginSelectSql == null) {
             return true;
         }
@@ -143,8 +152,14 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
             Map param = new HashMap();
             param.put(idKey, id);
             param.put(ticketKey, ticket);
+            param.put(wsTicketKey, wsTicket);
             List list = (List) persistentManager.loadQuery(con, loginSelectSql, param, null);
-            return list.size() == 1;
+            if(list.size() != 1) {
+                return false;
+            }
+            if(loginUpdateSql != null) {
+                persistentManager.persistQuery(con, loginUpdateSql, param);
+            }
         } finally {
             if(con != null) {
                 try {
@@ -152,6 +167,7 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
                 } catch(Exception e) {}
             }
         }
+        return true;
     }
 
     protected void logout(String id, String ticket) throws Exception {
