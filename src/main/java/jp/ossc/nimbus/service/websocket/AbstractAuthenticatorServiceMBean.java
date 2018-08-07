@@ -31,42 +31,61 @@
  */
 package jp.ossc.nimbus.service.websocket;
 
-import java.util.HashMap;
-import java.util.Map;
+import jp.ossc.nimbus.core.ServiceBaseMBean;
 
 /**
- * 簡易認証サービス。
+ * {@link AbstractAuthenticatorService}のMBeanインタフェース
  * <p>
  *
  * @author M.Ishida
  */
-public class SimpleTicketAuthenticatorService extends AbstractAuthenticatorService implements Authenticator, SimpleTicketAuthenticatorServiceMBean {
+public interface AbstractAuthenticatorServiceMBean extends ServiceBaseMBean {
 
-    private static final long serialVersionUID = -6297716161454066615L;
-    
-    private Map idAndTicketMapping;
+    public static final String DEFAULT_ID_KEY = "id";
 
-    public void setTicketMapping(String id, String ticket) {
-        if (idAndTicketMapping == null) {
-            idAndTicketMapping = new HashMap();
-        }
-        idAndTicketMapping.put(id, ticket);
-    }
+    public static final String DEFAULT_TICKET_KEY = "ticket";
 
-    public String getTicketMapping(String id) {
-        return idAndTicketMapping == null ? null : (String)idAndTicketMapping.get(id);
-    }
+    public static final byte[] DEFAULT_KEY = { 49, 113, 97, 122, 50, 119, 115, 120, 51, 101, 100, 99, 52, 114, 102,
+            118, 53, 116, 103, 98, 54, 121, 104, 110, 55, 117, 106, 109, 56, 105, 107, 44 };
+    public static final String DEFAULT_ALGORITHM = "AES";
+    public static final String DEFAULT_TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    public static final int DEFAULT_IVLENGTH = 16;
+    public static final String DEFAULT_HASHKEY = "DefaultHashKey99";
 
-    public Map getTicketMappings() {
-        return idAndTicketMapping;
-    }
+    public String getIdKey();
 
-    protected boolean login(String id, String ticket) throws Exception {
-        return ticket.equals(getTicketMapping(id));
-    }
+    public void setIdKey(String key);
 
-    protected void logout(String id, String ticket) throws Exception {
-        // DoNothing
-    }
+    public String getTicketKey();
+
+    public void setTicketKey(String key);
+
+    public byte[] getKey();
+
+    public void setKey(byte[] keyBytes);
+
+    public String getAlgorithm();
+
+    public void setAlgorithm(String paramAlgorithm);
+
+    public String getTransformation();
+
+    public void setTransformation(String paramTransformation);
+
+    public int getIvLength();
+
+    public void setIvLength(int length);
+
+    public String getProvider();
+
+    public void setProvider(String paramProvider);
+
+    public String getHashKey();
+
+    public void setHashKey(String hash);
+
+    public long getOverLimitTime();
+
+    public void setOverLimitTime(long time);
 
 }

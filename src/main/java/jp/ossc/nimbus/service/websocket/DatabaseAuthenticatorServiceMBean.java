@@ -31,42 +31,40 @@
  */
 package jp.ossc.nimbus.service.websocket;
 
-import java.util.HashMap;
-import java.util.Map;
+import jp.ossc.nimbus.core.ServiceName;
+import jp.ossc.nimbus.service.connection.ConnectionFactory;
+import jp.ossc.nimbus.service.connection.PersistentManager;
 
 /**
- * 簡易認証サービス。
+ * {@link DatabaseAuthenticatorService}のMBeanインタフェース
  * <p>
  *
  * @author M.Ishida
  */
-public class SimpleTicketAuthenticatorService extends AbstractAuthenticatorService implements Authenticator, SimpleTicketAuthenticatorServiceMBean {
-
-    private static final long serialVersionUID = -6297716161454066615L;
+public interface DatabaseAuthenticatorServiceMBean extends AbstractAuthenticatorServiceMBean {
     
-    private Map idAndTicketMapping;
-
-    public void setTicketMapping(String id, String ticket) {
-        if (idAndTicketMapping == null) {
-            idAndTicketMapping = new HashMap();
-        }
-        idAndTicketMapping.put(id, ticket);
-    }
-
-    public String getTicketMapping(String id) {
-        return idAndTicketMapping == null ? null : (String)idAndTicketMapping.get(id);
-    }
-
-    public Map getTicketMappings() {
-        return idAndTicketMapping;
-    }
-
-    protected boolean login(String id, String ticket) throws Exception {
-        return ticket.equals(getTicketMapping(id));
-    }
-
-    protected void logout(String id, String ticket) throws Exception {
-        // DoNothing
-    }
-
+    public ServiceName getConnectionFactoryServiceName();
+    
+    public void setConnectionFactoryServiceName(ServiceName serviceName);
+    
+    public ConnectionFactory getConnectionFactory();
+    
+    public void setConnectionFactory(ConnectionFactory factory);
+    
+    public ServiceName getPersistentManagerServiceName();
+    
+    public void setPersistentManagerServiceName(ServiceName serviceName);
+    
+    public PersistentManager getPersistentManager();
+    
+    public void setPersistentManager(PersistentManager manager);
+    
+    public String getLoginSelectSql();
+    
+    public void setLoginSelectSql(String sql);
+    
+    public String getLogoutUpdateSql();
+    
+    public void setLogoutUpdateSql(String sql);
+    
 }
