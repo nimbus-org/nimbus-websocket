@@ -55,7 +55,6 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
     
     protected String idKey = DEFAULT_ID_KEY;
     protected String ticketKey = DEFAULT_TICKET_KEY;
-    protected String wsTicketKey = DEFAULT_WS_TICKET_KEY;
 
     protected byte[] key = DEFAULT_KEY;
     protected String algorithm = DEFAULT_ALGORITHM;
@@ -83,14 +82,6 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
         ticketKey = key;
     }
     
-    public String getWsTicketKey() {
-        return wsTicketKey;
-    }
-
-    public void setWsTicketKey(String key) {
-        wsTicketKey = key;
-    }
-
     public byte[] getKey() {
         return key;
     }
@@ -153,31 +144,30 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
 
     public AuthResult login(HttpServletRequest req, HttpServletResponse res) throws AuthenticateException {
 
-        // 結果オブジェクト
         AuthResult result = new AuthResult();
 
         String id = req.getParameter(idKey);
         result.setId(id);
         String ticket = req.getParameter(ticketKey);
-        // ID,チケットがnullの場合はNG
         if (id == null) {
             throw new AuthenticateException("id is null");
         }
         if (ticket == null) {
             throw new AuthenticateException("ticket is null");
         }
-        Map map = wsCipher.createParametersMap();
-        map.put(idKey, id);
-        map.put(ticketKey, ticket);
-        String wsTicket = wsCipher.encrypt(null, map);
+        String wsTicket = null;
         boolean loginResult = false;
         try {
+            Map map = wsCipher.createParametersMap();
+            map.put(idKey, id);
+            map.put(ticketKey, ticket);
+            wsTicket = wsCipher.encrypt(null, map);
             loginResult = login(id, ticket, wsTicket);
         } catch(Exception e) {
             throw new AuthenticateException(e);
         }
         if (!loginResult) {
-            throw new AuthenticateException("Did not authenticated : " + id);
+            throw new AuthenticateException("Could not authenticated : " + id);
         }
         try {
             wsTicket = URLEncoder.encode(wsTicket, "UTF-8");
@@ -189,24 +179,23 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
         return result;
     }
 
-    public boolean handshake(String id, String ticket) throws AuthenticateException {
+    public boolean handshake(String id, String wsTicket) throws AuthenticateException {
         try {
-            // ID,チケットがnullの場合はNG
             if (id == null) {
                 throw new AuthenticateException("id is null");
             }
-            if (ticket == null) {
+            if (wsTicket == null) {
                 throw new AuthenticateException("ticket is null");
             }
             Map map = null;
             if (overLimitTime != -1) {
-                map = wsCipher.decrypt(null, ticket, overLimitTime);
+                map = wsCipher.decrypt(null, wsTicket, overLimitTime);
             } else {
-                map = wsCipher.decrypt(null, ticket);
+                map = wsCipher.decrypt(null, wsTicket);
             }
             String mapId = (String) map.get(idKey);
             if (!id.equals(mapId)) {
-                throw new AuthenticateException("ticket is incorrect value. id:" + id + " ticket:" + ticket);
+                throw new AuthenticateException("Handshake fail. Ticket is incorrect value. id:" + id + " ticket:" + wsTicket);
             }
         } catch (OverLimitExpiresException e) {
             throw new AuthenticateException(e);
@@ -216,9 +205,9 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
         return true;
     }
 
-    public void logout(String id, String ticket, boolean isForce) throws AuthenticateException {
+    public void logout(String id, String wsTicket, boolean isForce) throws AuthenticateException {
         try {
-            logout(id,ticket);
+            logout(id,wsTicket);
         } catch (Exception e) {
             throw new AuthenticateException(e);
         }
@@ -226,6 +215,6 @@ public abstract class AbstractAuthenticatorService extends ServiceBase implement
     
     protected abstract boolean login(String id, String ticket, String wsTicket) throws Exception;
     
-    protected abstract void logout(String id, String ticket) throws Exception;
+    protected abstract void logout(String id, String wsTicket) throws Exception;
 
 }

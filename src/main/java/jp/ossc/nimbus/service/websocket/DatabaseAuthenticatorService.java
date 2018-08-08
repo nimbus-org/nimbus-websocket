@@ -59,6 +59,8 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
     protected ServiceName persistentManagerServiceName;
     protected PersistentManager persistentManager;
     
+    protected String wsTicketKey = DEFAULT_WS_TICKET_KEY;
+    
     protected String loginSelectSql;
     protected String loginUpdateSql;
     protected String logoutUpdateSql;
@@ -119,6 +121,14 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
         logoutUpdateSql = sql;
     }
 
+    public String getWsTicketKey() {
+        return wsTicketKey;
+    }
+
+    public void setWsTicketKey(String key) {
+        wsTicketKey = key;
+    }
+
     /**
      * サービスの開始処理を行う。
      * <p>
@@ -170,7 +180,7 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
         return true;
     }
 
-    protected void logout(String id, String ticket) throws Exception {
+    protected void logout(String id, String wsTicket) throws Exception {
         if(logoutUpdateSql == null) {
             return;
         }
@@ -178,7 +188,7 @@ public class DatabaseAuthenticatorService extends AbstractAuthenticatorService i
         try {
             Map param = new HashMap();
             param.put(idKey, id);
-            param.put(ticketKey, ticket);
+            param.put(wsTicketKey, wsTicket);
             persistentManager.persistQuery(con, logoutUpdateSql, param);
         } finally {
             if(con != null) {

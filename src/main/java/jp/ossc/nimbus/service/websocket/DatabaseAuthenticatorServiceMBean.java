@@ -43,6 +43,8 @@ import jp.ossc.nimbus.service.connection.PersistentManager;
  */
 public interface DatabaseAuthenticatorServiceMBean extends AbstractAuthenticatorServiceMBean {
     
+    public static final String DEFAULT_WS_TICKET_KEY = "wsTicket";
+    
     public ServiceName getConnectionFactoryServiceName();
     
     public void setConnectionFactoryServiceName(ServiceName serviceName);
@@ -70,5 +72,9 @@ public interface DatabaseAuthenticatorServiceMBean extends AbstractAuthenticator
     public String getLogoutUpdateSql();
     
     public void setLogoutUpdateSql(String sql);
+    
+    public String getWsTicketKey();
+
+    public void setWsTicketKey(String key);
     
 }
