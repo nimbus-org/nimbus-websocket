@@ -150,7 +150,10 @@ public class NimbusServerApplicationConfig implements ServerApplicationConfig {
         try {
             String serviceFile = null;
             while ((serviceFile = br.readLine()) != null) {
-                resultList.add(serviceFile.trim());
+                String filePath = serviceFile.trim();
+                if(!"".equals(filePath) && !filePath.startsWith("#")) {
+                    resultList.add(filePath);
+                }
             }
         } finally {
             br.close();
