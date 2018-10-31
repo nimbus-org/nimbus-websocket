@@ -53,7 +53,7 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
     
     protected String messageEncoding = "UTF-8";
     protected String addKeyString = "ADD";
-    protected String removeKeyString = "REMOVE";
+    protected String delKeyString = "DEL";
     protected String messageSeparatorString = ",";
     
     public String getMessageParseErrorId() {
@@ -96,12 +96,12 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
         addKeyString = string;
     }
 
-    public String getRemoveKeyString() {
-        return removeKeyString;
+    public String getDelKeyString() {
+        return delKeyString;
     }
 
-    public void setRemoveKeyString(String string) {
-        removeKeyString = string;
+    public void setDelKeyString(String string) {
+        delKeyString = string;
     }
 
     public String getMessageSeparatorString() {
@@ -120,8 +120,8 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
         if(addKeyString == null) {
             throw new IllegalArgumentException("AddKeyString is null.");
         }
-        if(removeKeyString == null) {
-            throw new IllegalArgumentException("RemoveKeyString is null.");
+        if(delKeyString == null) {
+            throw new IllegalArgumentException("DelKeyString is null.");
         }
         if(messageSeparatorString == null) {
             throw new IllegalArgumentException("MessageSeparatorString is null.");
@@ -151,7 +151,7 @@ public class DefaultPublishMessageHandlerFactoryService extends AbstractPublishM
                         getLogger().write(messageKeyAddErrorId, new Object[] {message, SessionProperties.getSessionProperty(session)});
                     }
                 }
-            } else if(removeKeyString.equals(args[0])) {
+            } else if(delKeyString.equals(args[0])) {
                 try {
                     if(args.length == 2) {
                         dispatcher.removeKey(args[1], this);

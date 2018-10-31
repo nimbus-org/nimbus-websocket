@@ -97,6 +97,12 @@ public interface AbstractMessageHandlerFactoryServiceMBean extends ServiceBaseMB
     public static final String DEFAULT_REQUEST_MESSAGE_JOURNAL_KEY = "Message";
 
     /**
+     * ジャーナルのExceptionのキーのデフォルト値。
+     * <p>
+     */
+    public static final String DEFAULT_EXCEPTION_JOURNAL_KEY = "Exception";
+
+    /**
      * クライアントから受信したバイト配列を文字列に変換する際に使用するデフォルトエンコーディング
      */
     public static final String DEFAULT_ENCODE = "UTF-8";
@@ -307,6 +313,23 @@ public interface AbstractMessageHandlerFactoryServiceMBean extends ServiceBaseMB
      * @return ジャーナルキー名
      */
     public String getRequestMessageJournalKey();
+
+    /**
+     * Exceptionをジャーナリングする際のジャーナルキー名を設定する。
+     * <p>
+     * デフォルトは、{@link #DEFAULT_EXCEPTION_JOURNAL_KEY}。<br>
+     *
+     * @param key ジャーナルキー名
+     */
+    public void setExceptionJournalKey(String key);
+    
+    /**
+     * Exceptionをジャーナリングする際のジャーナルキー名を取得する。
+     * <p>
+     *
+     * @return ジャーナルキー名
+     */
+    public String getExceptionJournalKey();
 
     /**
      * クライアントから受信したバイト配列を文字列に変換する際に使用するエンコーディングを取得する。

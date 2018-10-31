@@ -17,4 +17,16 @@ public interface DefaultPublishMessageHandlerFactoryServiceMBean extends Abstrac
     public String getMessageEncoding();
 
     public void setMessageEncoding(String encoding);
+
+    public String getAddKeyString();
+
+    public void setAddKeyString(String string);
+
+    public String getDelKeyString();
+
+    public void setDelKeyString(String string);
+
+    public String getMessageSeparatorString();
+
+    public void setMessageSeparatorString(String string);
 }

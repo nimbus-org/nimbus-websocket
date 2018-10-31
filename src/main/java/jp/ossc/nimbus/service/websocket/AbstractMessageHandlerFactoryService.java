@@ -75,6 +75,7 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
     protected String ipJournalKey = DEFAULT_IP_JOURNAL_KEY;
     protected String portJournalKey = DEFAULT_PORT_JOURNAL_KEY;
     protected String requestMessageJournalKey = DEFAULT_REQUEST_MESSAGE_JOURNAL_KEY;
+    protected String exceptionJournalKey = DEFAULT_EXCEPTION_JOURNAL_KEY;
     protected String pingSendErrorMessageId = DEFAULT_PING_SEND_ERROR_MESSAGE_ID;
 
     protected String clientPingMessage;
@@ -180,6 +181,14 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
 
     public String getRequestMessageJournalKey() {
         return requestMessageJournalKey;
+    }
+
+    public String getExceptionJournalKey() {
+        return exceptionJournalKey;
+    }
+
+    public void setExceptionJournalKey(String key) {
+        exceptionJournalKey = key;
     }
 
     public String getMessageEncoding() {
@@ -297,8 +306,13 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
                     return;
                 }
                 onMessageProcess(message);
-            } catch (UnsupportedEncodingException e) {
-                // startServiceでチェックしているので起こらない。
+            } catch(UnsupportedEncodingException e){
+                // Nop startService でチェックしているので発生しない
+            } catch (RuntimeException e) {
+                if (accessJournal != null) {
+                    accessJournal.addInfo(exceptionJournalKey, e);
+                }
+                throw e;
             } finally {
                 if (accessJournal != null) {
                     accessJournal.addInfo(requestMessageJournalKey, message);
