@@ -99,282 +99,226 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
 
     protected ServiceBase service;
 
-    @Override
     public ServiceName[] getMessageHandlerServiceNames() {
         return messageHandlerServiceNames;
     }
 
-    @Override
     public void setMessageHandlerServiceNames(ServiceName[] names) {
         messageHandlerServiceNames = names;
     }
 
-    @Override
     public ServiceName getAuthenticatorServiceName() {
         return authenticatorServiceName;
     }
 
-    @Override
     public void setAuthenticatorServiceName(ServiceName name) {
         this.authenticatorServiceName = name;
     }
 
-    @Override
     public ServiceName getExceptionHandlerMappingServiceName() {
         return exceptionHandlerMappingServiceName;
     }
 
-    @Override
     public void setExceptionHandlerMappingServiceName(ServiceName name) {
         this.exceptionHandlerMappingServiceName = name;
     }
 
-    @Override
     public ServiceName getWebSocketAccessJournalServiceName() {
         return webSocketAccessJournalServiceName;
     }
 
-    @Override
     public void setWebSocketAccessJournalServiceName(ServiceName name) {
         webSocketAccessJournalServiceName = name;
     }
 
-    @Override
     public ServiceName getEditorFinderServiceName() {
         return editorFinderServiceName;
     }
 
-    @Override
     public void setEditorFinderServiceName(ServiceName name) {
         editorFinderServiceName = name;
     }
 
-    @Override
     public ServiceName getSequenceServiceName() {
         return sequenceServiceName;
     }
 
-    @Override
     public void setSequenceServiceName(ServiceName name) {
         sequenceServiceName = name;
     }
 
-    @Override
     public void setAccessJournalKey(String key) {
         accessJournalKey = key;
     }
 
-    @Override
     public String getAccessJournalKey() {
         return accessJournalKey;
     }
 
-    @Override
     public void setIdJournalKey(String key) {
         idJournalKey = key;
     }
 
-    @Override
     public String getIdJournalKey() {
         return idJournalKey;
     }
 
-    @Override
     public void setTicketJournalKey(String key) {
         ticketJournalKey = key;
     }
 
-    @Override
     public String getTicketJournalKey() {
         return ticketJournalKey;
     }
 
-    @Override
     public void setWebSocketSessionIdJournalKey(String key) {
         webSocketSessionIdJournalKey = key;
     }
 
-    @Override
     public String getWebSocketSessionIdJournalKey() {
         return webSocketSessionIdJournalKey;
     }
 
-    @Override
     public String getHttpSessionIdJournalKey() {
         return httpSessionIdJournalKey;
     }
 
-    @Override
     public void setHttpSessionIdJournalKey(String key) {
         httpSessionIdJournalKey = key;
     }
 
-    @Override
     public String getPathJournalKey() {
         return pathJournalKey;
     }
 
-    @Override
     public void setPathJournalKey(String key) {
         pathJournalKey = key;
     }
 
-    @Override
     public String getIpJournalKey() {
         return ipJournalKey;
     }
 
-    @Override
     public void setIpJournalKey(String key) {
         ipJournalKey = key;
     }
 
-    @Override
     public String getPortJournalKey() {
         return portJournalKey;
     }
 
-    @Override
     public void setPortJournalKey(String key) {
         portJournalKey = key;
     }
 
-    @Override
     public String getHeaderJournalKey() {
         return headerJournalKey;
     }
 
-    @Override
     public void setHeaderJournalKey(String key) {
         headerJournalKey = key;
     }
 
-    @Override
     public String getParameterJournalKey() {
         return parameterJournalKey;
     }
 
-    @Override
     public void setParameterJournalKey(String key) {
         parameterJournalKey = key;
     }
 
-    @Override
     public void setRequestMessageJournalKey(String key) {
         requestMessageJournalKey = key;
     }
 
-    @Override
     public String getRequestMessageJournalKey() {
         return requestMessageJournalKey;
     }
 
-    @Override
     public void setCloseReasonJournalKey(String key) {
         closeReasonJournalKey = key;
     }
 
-    @Override
     public String getCloseReasonJournalKey() {
         return closeReasonJournalKey;
     }
 
-    @Override
     public void setAuthResultJournalKey(String key) {
         authResultJournalKey = key;
     }
 
-    @Override
     public String getAuthResultJournalKey() {
         return authResultJournalKey;
     }
 
-    @Override
     public void setExceptionJournalKey(String key) {
         exceptionJournalKey = key;
     }
 
-    @Override
     public String getExceptionJournalKey() {
         return exceptionJournalKey;
     }
 
-    @Override
     public int getMaxClientSize() {
         return maxClientSize;
     }
 
-    @Override
     public void setMaxClientSize(int size) {
         this.maxClientSize = size;
     }
 
-    @Override
     public long getMaxIdleTimeout() {
         return maxIdleTimeout;
     }
 
-    @Override
     public void setMaxIdleTimeout(long time) {
         maxIdleTimeout = time;
     }
 
-    @Override
     public int getMaxTextMessageBufferSize() {
         return maxTextMessageBufferSize;
     }
 
-    @Override
     public void setMaxTextMessageBufferSize(int size) {
         maxTextMessageBufferSize = size;
     }
 
-    @Override
     public int getMaxBinaryMessageBufferSize() {
         return maxBinaryMessageBufferSize;
     }
 
-    @Override
     public void setMaxBinaryMessageBufferSize(int size) {
         maxBinaryMessageBufferSize = size;
     }
 
-    @Override
     public String getIllegalRequestMessageId() {
         return illegalRequestMessageId;
     }
 
-    @Override
     public void setIllegalRequestMessageId(String id) {
         illegalRequestMessageId = id;
     }
 
-    @Override
     public String getMaxClientSizeOverMessageId() {
         return maxClientSizeOverMessageId;
     }
 
-    @Override
     public void setMaxClientSizeOverMessageId(String id) {
         maxClientSizeOverMessageId = id;
     }
 
-    @Override
     public String getAbnormalCloseMessageId() {
         return abnormalCloseMessageId;
     }
 
-    @Override
     public void setAbnormalCloseMessageId(String id) {
         abnormalCloseMessageId = id;
     }
 
-    @Override
     public int getClientSize() {
         return sessionSet.size();
     }
 
-    @Override
     public String getAllClientSessionProperties() {
         Set result = new HashSet();
         synchronized (sessionSet) {
@@ -387,7 +331,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         return result.toString();
     }
 
-    @Override
     public Set findClientSessionPropertiesFromSessionId(String sessionId) {
         Set result = new HashSet();
         if (sessionId != null) {
@@ -405,7 +348,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         return result;
     }
 
-    @Override
     public void closeClientSessionFromSessionId(String id) {
         if (id != null) {
             synchronized (sessionSet) {
@@ -425,7 +367,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public Set findClientSessionPropertiesFromIp(String ip) {
         Set result = new HashSet();
         if (ip != null) {
@@ -443,7 +384,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         return result;
     }
 
-    @Override
     public void closeClientSessionFromIp(String ip) {
         if (ip != null) {
             synchronized (sessionSet) {
@@ -463,7 +403,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public Set findClientSessionPropertiesFromId(String id) {
         Set result = new HashSet();
         if (id != null) {
@@ -481,7 +420,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         return result;
     }
 
-    @Override
     public void closeClientSessionFromId(String id) {
         if (id != null) {
             synchronized (sessionSet) {
@@ -501,17 +439,14 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public void setServiceBase(ServiceBase service) {
         this.service = service;
     }
 
-    @Override
     public void createService() throws Exception {
         sessionSet = new HashSet();
     }
 
-    @Override
     public void startService() throws Exception {
         if (messageHandlerServiceNames == null || messageHandlerServiceNames.length == 0) {
             throw new IllegalArgumentException("MessageHandlerServiceNames is null or empty.");
@@ -535,7 +470,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public void stopService() throws Exception {
         if(sessionSet != null){
             Iterator it = sessionSet.iterator();
@@ -548,11 +482,9 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public void destroyService() throws Exception {
     }
 
-    @Override
     public void onOpen(Session session, EndpointConfig config) {
         try {
             SessionProperties prop = (SessionProperties) config.getUserProperties().get(SessionProperties.SESSION_PROPERTY_KEY);
@@ -641,7 +573,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public void onClose(Session session, CloseReason closeReason) {
         try {
             if (accessJournal != null) {
@@ -693,7 +624,6 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
         }
     }
 
-    @Override
     public void onError(Session session, Throwable thr) {
         Set messageHandlers = session.getMessageHandlers();
         Iterator itr = messageHandlers.iterator();

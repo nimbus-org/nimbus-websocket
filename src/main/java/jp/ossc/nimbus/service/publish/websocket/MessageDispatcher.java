@@ -59,7 +59,7 @@ public interface MessageDispatcher {
      * @param key 配信メッセージに対するキーオブジェクト
      * @param sender メッセージ送信対象
      */
-    public void addKey(Object key, MessageSender sender);
+    public void addKey(Object key, MessageSender sender) throws Exception;
 
     /**
      * 配信メッセージに対するキーオブジェクトに対してメッセージ送信対象を削除する
@@ -67,6 +67,6 @@ public interface MessageDispatcher {
      * @param key 配信メッセージに対するキーオブジェクト
      * @param sender メッセージ送信対象
      */
-    public void removeKey(Object key, MessageSender sender);
+    public void removeKey(Object key, MessageSender sender) throws Exception;
 
 }

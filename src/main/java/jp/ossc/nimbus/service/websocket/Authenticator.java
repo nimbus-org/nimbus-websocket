@@ -61,21 +61,21 @@ public interface Authenticator {
      * <p>
      *
      * @param id ユーザを特定するID
-     * @param ticket WebSocketのHandshake認証に使用するチケット情報。ログイン処理の返却値に含まれる。
+     * @param wsTicket WebSocketのHandshake認証に使用するチケット情報。ログイン処理の返却値に含まれる。
      * @return 認証結果
      * @throws AuthenticateException 処理中に例外が発生した場合
      */
-    public boolean handshake(String id, String ticket) throws AuthenticateException;
+    public boolean handshake(String id, String wsTicket) throws AuthenticateException;
 
     /**
      * ログアウトする。
      * <p>
      *
      * @param id ユーザを特定するid
-     * @param ticket 認証に使用するチケット情報
+     * @param wsTicket 認証に使用するチケット情報
      * @param isForce 強制、異常終了の場合は、true
      * @throws AuthenticateException 処理中に例外が発生した場合
      */
-    public void logout(String id, String ticket, boolean isForce) throws AuthenticateException;
+    public void logout(String id, String wsTicket, boolean isForce) throws AuthenticateException;
 
 }

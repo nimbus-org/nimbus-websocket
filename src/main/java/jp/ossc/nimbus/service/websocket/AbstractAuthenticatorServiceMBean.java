@@ -29,54 +29,62 @@
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of the Nimbus Project.
  */
-package jp.ossc.nimbus.service.publish.websocket;
+package jp.ossc.nimbus.service.websocket;
 
-import jp.ossc.nimbus.core.ServiceName;
-import jp.ossc.nimbus.service.websocket.AbstractMessageHandlerFactoryServiceMBean;
-import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
+import jp.ossc.nimbus.core.ServiceBaseMBean;
 
 /**
- * {@link AbstractPublishMessageHandlerFactoryService}のMBeanインタフェース
+ * {@link AbstractAuthenticatorService}のMBeanインタフェース
  * <p>
  *
  * @author M.Ishida
  */
-public interface AbstractPublishMessageHandlerFactoryServiceMBean extends AbstractMessageHandlerFactoryServiceMBean {
+public interface AbstractAuthenticatorServiceMBean extends ServiceBaseMBean {
 
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageDispatcherServiceName();
+    public static final String DEFAULT_ID_KEY = "id";
+    public static final String DEFAULT_TICKET_KEY = "ticket";
 
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageDispatcherServiceName(ServiceName name);
-    
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendExceptionHandlerMappingServiceName();
+    public static final byte[] DEFAULT_KEY = { 49, 113, 97, 122, 50, 119, 115, 120, 51, 101, 100, 99, 52, 114, 102,
+            118, 53, 116, 103, 98, 54, 121, 104, 110, 55, 117, 106, 109, 56, 105, 107, 44 };
+    public static final String DEFAULT_ALGORITHM = "AES";
+    public static final String DEFAULT_TRANSFORMATION = "AES/CBC/PKCS5Padding";
+    public static final int DEFAULT_IVLENGTH = 16;
+    public static final String DEFAULT_HASHKEY = "DefaultHashKey99";
 
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendExceptionHandlerMappingServiceName(ServiceName name);
+    public String getIdKey();
 
-    /**
-     * メッセージ送信件数を取得する。
-     * <p>
-     *
-     * @return メッセージ送信件数
-     */
-    public long getMessageSendCount();
-    
+    public void setIdKey(String key);
+
+    public String getTicketKey();
+
+    public void setTicketKey(String key);
+
+    public byte[] getKey();
+
+    public void setKey(byte[] keyBytes);
+
+    public String getAlgorithm();
+
+    public void setAlgorithm(String paramAlgorithm);
+
+    public String getTransformation();
+
+    public void setTransformation(String paramTransformation);
+
+    public int getIvLength();
+
+    public void setIvLength(int length);
+
+    public String getProvider();
+
+    public void setProvider(String paramProvider);
+
+    public String getHashKey();
+
+    public void setHashKey(String hash);
+
+    public long getOverLimitTime();
+
+    public void setOverLimitTime(long time);
+
 }

@@ -33,7 +33,6 @@ package jp.ossc.nimbus.service.publish.websocket;
 
 import jp.ossc.nimbus.core.ServiceBaseMBean;
 import jp.ossc.nimbus.core.ServiceName;
-import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
 
 /**
  * {@link AbstractPublishMessageDispatcherService}のMBeanインタフェース
@@ -50,84 +49,18 @@ public interface AbstractPublishMessageDispatcherServiceMBean extends ServiceBas
     public static final String DEFAULT_SEND_ERROR_MESSAGE_ID = "WS___00006";
 
     /**
-     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズのデフォルト値。
+     * {@link jp.ossc.nimbus.service.publish.Message Message}を受信する{@link jp.ossc.nimbus.service.publish.MessageReceiver MessageReceiver}サービスのサービス名を取得する。<p>
      *
+     * @return MessageReceiverサービスのサービス名
      */
-    public static final int DEFAULT_MESSAGE_SEND_PARAMETER_RECYCLE_LIST_SIZE = -1;
+    public ServiceName getMessageReceiverServiceName() ;
 
     /**
-     * メッセージ配信を受信するためのQueueHandlerContainerのサービス名を取得する。
+     * {@link jp.ossc.nimbus.service.publish.Message Message}を受信する{@link jp.ossc.nimbus.service.publish.MessageReceiver MessageReceiver}サービスのサービス名を設定する。<p>
      *
-     * @return サービス名
+     * @param name MessageReceiverサービスのサービス名
      */
-    public ServiceName getMessageListenerQueueHandlerContainerServiceName();
-
-    /**
-     * メッセージ配信を受信するためのQueueHandlerContainerのサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageListenerQueueHandlerContainerServiceName(ServiceName name);
-
-    /**
-     * メッセージ配信を受信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を取得する
-     * 。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageListenerQueueSelectorServiceName();
-
-    /**
-     * メッセージ配信を受信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を設定する
-     * 。
-     *
-     * @param name サービス名
-     */
-    public void setMessageListenerQueueSelectorServiceName(ServiceName name);
-
-    /**
-     * メッセージを送信するためのQueueHandlerContainerのサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendQueueHandlerContainerServiceName();
-
-    /**
-     * メッセージを送信するためのQueueHandlerContainerのサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendQueueHandlerContainerServiceName(ServiceName name);
-
-    /**
-     * メッセージを送信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を取得する
-     * 。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendQueueSelectorServiceName();
-
-    /**
-     * メッセージを送信するためのQueueHandlerContainerに設定するDistributedQueueSelectorのサービス名を設定する
-     * 。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendQueueSelectorServiceName(ServiceName name);
-
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendExceptionHandlerMappingServiceName();
-
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendExceptionHandlerMappingServiceName(ServiceName name);
+    public void setMessageReceiverServiceName(ServiceName serviceName) ;
 
     /**
      * データ送信時にエラーが発生した際に出力するメッセージIDを取得する。
@@ -143,27 +76,11 @@ public interface AbstractPublishMessageDispatcherServiceMBean extends ServiceBas
      * @param messageId メッセージID
      */
     public void setSendErrorMessageId(String messageId);
-
+    
     /**
-     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズを取得する。
+     * メッセージの受信件数を取得する。
      *
-     * @return リストサイズ
+     * @return メッセージの受信件数
      */
-    public int getMessageSendParameterRecycleListSize();
-
-    /**
-     * メッセージを送信するためのQueueHandlerContainerへのパラメータオブジェクトを再利用するためのリストサイズを設定する。
-     * デフォルトは {@link #DEFAULT_MESSAGE_SEND_PARAMETER_RECYCLE_LIST_SIZE} 。
-     *
-     * @param size リストサイズ
-     */
-    public void setMessageSendParameterRecycleListSize(int size);
-
-    /**
-     * メッセージ送信件数を取得する。
-     * <p>
-     *
-     * @return メッセージ送信件数
-     */
-    public long getMessageSendCount();
+    public long getMessageReceiveCount() ;
 }

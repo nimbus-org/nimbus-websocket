@@ -73,7 +73,6 @@ public class CustomCloseReason extends CloseReason {
             }
         }
 
-        @Override
         public int getCode() {
             return code;
         }

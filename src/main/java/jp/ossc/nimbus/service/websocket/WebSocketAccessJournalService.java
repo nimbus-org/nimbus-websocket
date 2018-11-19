@@ -73,157 +73,126 @@ public class WebSocketAccessJournalService extends ServiceBase implements WebSoc
     protected EditorFinder editorFinder;
     protected Sequence sequence;
 
-    @Override
     public void setJournalServiceName(ServiceName name) {
         journalServiceName = name;
     }
 
-    @Override
     public ServiceName getJournalServiceName() {
         return journalServiceName;
     }
 
-    @Override
     public void setEditorFinderServiceName(ServiceName name) {
         requestEditorFinderServiceName = name;
     }
 
-    @Override
     public ServiceName getEditorFinderServiceName() {
         return requestEditorFinderServiceName;
     }
 
-    @Override
     public void setAccessJournalKey(String key) {
         accessJournalKey = key;
     }
 
-    @Override
     public String getAccessJournalKey() {
         return accessJournalKey;
     }
 
-    @Override
     public void setIdJournalKey(String key) {
         idJournalKey = key;
     }
 
-    @Override
     public String getIdJournalKey() {
         return idJournalKey;
     }
 
-    @Override
     public void setTicketJournalKey(String key) {
         ticketJournalKey = key;
     }
 
-    @Override
     public String getTicketJournalKey() {
         return ticketJournalKey;
     }
 
-    @Override
     public void setWebSocketSessionIdJournalKey(String key) {
         webSocketSessionIdJournalKey = key;
     }
 
-    @Override
     public String getWebSocketSessionIdJournalKey() {
         return webSocketSessionIdJournalKey;
     }
 
-    @Override
     public String getHttpSessionIdJournalKey() {
         return httpSessionIdJournalKey;
     }
 
-    @Override
     public void setHttpSessionIdJournalKey(String key) {
         httpSessionIdJournalKey = key;
     }
 
-    @Override
     public String getPathJournalKey() {
         return pathJournalKey;
     }
 
-    @Override
     public void setPathJournalKey(String key) {
         pathJournalKey = key;
     }
 
-    @Override
     public String getIpJournalKey() {
         return ipJournalKey;
     }
 
-    @Override
     public void setIpJournalKey(String key) {
         ipJournalKey = key;
     }
 
-    @Override
     public String getPortJournalKey() {
         return portJournalKey;
     }
 
-    @Override
     public void setPortJournalKey(String key) {
         portJournalKey = key;
     }
 
-    @Override
     public void setRequestMessageJournalKey(String key) {
         requestMessageJournalKey = key;
     }
 
-    @Override
     public String getRequestMessageJournalKey() {
         return requestMessageJournalKey;
     }
 
-    @Override
     public void setCloseReasonJournalKey(String key) {
         closeReasonJournalKey = key;
     }
 
-    @Override
     public String getCloseReasonJournalKey() {
         return closeReasonJournalKey;
     }
 
-    @Override
     public void setAuthResultJournalKey(String key) {
         authResultJournalKey = key;
     }
 
-    @Override
     public String getAuthResultJournalKey() {
         return authResultJournalKey;
     }
 
-    @Override
     public void setExceptionJournalKey(String key) {
         exceptionJournalKey = key;
     }
 
-    @Override
     public String getExceptionJournalKey() {
         return exceptionJournalKey;
     }
 
-    @Override
     public void setSequenceServiceName(ServiceName name) {
         sequenceServiceName = name;
     }
 
-    @Override
     public ServiceName getSequenceServiceName() {
         return sequenceServiceName;
     }
 
-    @Override
     public void startService() throws Exception {
         if (journalServiceName != null) {
             journal = (Journal) ServiceManagerFactory.getServiceObject(journalServiceName);

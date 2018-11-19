@@ -2,7 +2,6 @@ package jp.ossc.nimbus.service.publish.websocket;
 
 import java.util.Set;
 
-import jp.ossc.nimbus.service.publish.websocket.AbstractPublishMessageDispatcherService.MessageSendParameter;
 import jp.ossc.nimbus.service.queue.AbstractDistributedQueueSelectorService;
 
 /**
@@ -13,6 +12,8 @@ import jp.ossc.nimbus.service.queue.AbstractDistributedQueueSelectorService;
  */
 public class SessionIdMessageSendDistributedQueueSelectorService extends AbstractDistributedQueueSelectorService
         implements SessionIdMessageSendDistributedQueueSelectorServiceMBean {
+
+    private static final long serialVersionUID = 9116235892276821497L;
 
     protected Object getKey(Object obj) {
         MessageSendParameter param = (MessageSendParameter) obj;

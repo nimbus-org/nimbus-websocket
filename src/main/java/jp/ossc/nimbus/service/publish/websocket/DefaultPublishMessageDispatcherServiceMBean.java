@@ -31,52 +31,12 @@
  */
 package jp.ossc.nimbus.service.publish.websocket;
 
-import jp.ossc.nimbus.core.ServiceName;
-import jp.ossc.nimbus.service.websocket.AbstractMessageHandlerFactoryServiceMBean;
-import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
-
 /**
- * {@link AbstractPublishMessageHandlerFactoryService}のMBeanインタフェース
+ * {@link DefaultPublishMessageDispatcherService}のMBeanインタフェース
  * <p>
  *
  * @author M.Ishida
  */
-public interface AbstractPublishMessageHandlerFactoryServiceMBean extends AbstractMessageHandlerFactoryServiceMBean {
-
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageDispatcherServiceName();
-
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageDispatcherServiceName(ServiceName name);
-    
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendExceptionHandlerMappingServiceName();
-
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendExceptionHandlerMappingServiceName(ServiceName name);
-
-    /**
-     * メッセージ送信件数を取得する。
-     * <p>
-     *
-     * @return メッセージ送信件数
-     */
-    public long getMessageSendCount();
+public interface DefaultPublishMessageDispatcherServiceMBean extends AbstractPublishMessageDispatcherServiceMBean{
     
 }

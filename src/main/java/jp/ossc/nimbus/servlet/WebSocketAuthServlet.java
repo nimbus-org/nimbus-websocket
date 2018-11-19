@@ -507,7 +507,6 @@ public class WebSocketAuthServlet extends HttpServlet {
 
     }
 
-    @Override
     public void destroy() {
         String[] serviceDefinitionFiles = null;
         try {
