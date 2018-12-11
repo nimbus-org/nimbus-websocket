@@ -31,9 +31,6 @@
  */
 package jp.ossc.nimbus.service.publish.websocket;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.websocket.CloseReason;
 import javax.websocket.EndpointConfig;
 import javax.websocket.Session;
@@ -42,6 +39,7 @@ import jp.ossc.nimbus.core.Service;
 import jp.ossc.nimbus.core.ServiceManagerFactory;
 import jp.ossc.nimbus.core.ServiceName;
 import jp.ossc.nimbus.service.websocket.AbstractMessageHandlerFactoryService;
+import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
 import jp.ossc.nimbus.service.websocket.SessionProperties;
 
 /**
@@ -51,106 +49,94 @@ import jp.ossc.nimbus.service.websocket.SessionProperties;
  *
  * @author M.Ishida
  */
-public abstract class AbstractPublishMessageHandlerFactoryService extends AbstractMessageHandlerFactoryService
-        implements AbstractPublishMessageHandlerFactoryServiceMBean {
+public abstract class AbstractPublishMessageHandlerFactoryService extends AbstractMessageHandlerFactoryService implements AbstractPublishMessageHandlerFactoryServiceMBean {
 
+    private static final long serialVersionUID = -6832747437783344769L;
+    
     protected ServiceName messageDispatcherServiceName;
+    protected ServiceName messageSendExceptionHandlerMappingServiceName;
 
-    protected long bufferingMaxTime = -1;
-    protected int bufferingMaxSize = -1;
-
+    protected ExceptionHandlerMappingService messageSendExceptionHandler;
     protected MessageDispatcher dispatcher;
 
-    @Override
+    protected long messageSendCount;
+    
     public ServiceName getMessageDispatcherServiceName() {
         return messageDispatcherServiceName;
     }
 
-    @Override
     public void setMessageDispatcherServiceName(ServiceName name) {
         messageDispatcherServiceName = name;
     }
 
-    @Override
-    public long getBufferingMaxTime() {
-        return bufferingMaxTime;
+    public ServiceName getMessageSendExceptionHandlerMappingServiceName() {
+        return messageSendExceptionHandlerMappingServiceName;
     }
 
-    @Override
-    public void setBufferingMaxTime(long time) {
-        bufferingMaxTime = time;
+    public void setMessageSendExceptionHandlerMappingServiceName(ServiceName serviceName) {
+        messageSendExceptionHandlerMappingServiceName = serviceName;
     }
 
-    @Override
-    public int getBufferingMaxSize() {
-        return bufferingMaxSize;
+    public long getMessageSendCount() {
+        return messageSendCount;
     }
 
-    @Override
-    public void setBufferingMaxSize(int size) {
-        bufferingMaxSize = size;
-    }
-
-    @Override
     protected void preStartService() throws Exception {
         super.preStartService();
         if (messageDispatcherServiceName == null) {
             throw new IllegalArgumentException("MessageDispatcherServiceName is null.");
         }
         dispatcher = (MessageDispatcher) ServiceManagerFactory.getServiceObject(messageDispatcherServiceName);
+        if (messageSendExceptionHandlerMappingServiceName != null) {
+            messageSendExceptionHandler = (ExceptionHandlerMappingService) ServiceManagerFactory.getServiceObject(messageSendExceptionHandlerMappingServiceName);
+        }
     }
 
-    @Override
     protected abstract Service createServiceInstance() throws Exception;
 
     /**
      * メッセージ送受信用MessageHandlerサービスクラス。
      * クライアントから受信したメッセージに応じて、MessageDispatcherに対して配信登録を行う。
-     * また、メッセージのプーリング機能により、一定期間、メッセージをプーリングして送信する。
      *
      * @author m-ishida
      *
      */
-    public abstract class AbstractPublishMessageHandlerService extends AbstractMessageHandlerService implements
-            MessageSender {
+    public abstract class AbstractPublishMessageHandlerService extends AbstractMessageHandlerService implements MessageSender {
 
-        protected List poolList;
+        private static final long serialVersionUID = 5053359912274095886L;
 
-        @Override
-        public void createService() throws Exception {
-            super.createService();
-            poolList = new ArrayList();
-        }
-
-        @Override
         protected void onOpenProcess(Session session, EndpointConfig config) {
             dispatcher.addMessageSender(this);
         }
 
-        @Override
         protected void onCloseProcess(Session session, CloseReason closeReason) {
             dispatcher.removeMessageSender(this);
         }
 
-        @Override
         protected void onErrorProcess(Session session, Throwable thr) {
         }
 
-        @Override
         protected abstract void onMessageProcess(String message);
 
-        @Override
-        public void sendMessage(Object msg) throws Exception{
-            sendMessageProcess(msg);
-            SessionProperties.getSessionProperty(session).addSendMessageCount();
+        public void sendMessage(Object msg) {
+            try {
+                sendMessageProcess(msg);
+                messageSendCount++;
+                SessionProperties.getSessionProperty(session).addSendMessageCount();
+            } catch (Exception e) {
+                if (messageSendExceptionHandler != null) {
+                    try {
+                        messageSendExceptionHandler.handleException(session, e);
+                    } catch (Throwable thr) {
+                    }
+                }
+            }
         }
 
         public abstract void sendMessageProcess(Object msg) throws Exception;
-
-        @Override
+        
         public Session getSession() {
             return session;
         }
     }
-
 }

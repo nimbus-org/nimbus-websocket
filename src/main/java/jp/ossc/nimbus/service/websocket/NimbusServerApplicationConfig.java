@@ -89,7 +89,6 @@ public class NimbusServerApplicationConfig implements ServerApplicationConfig {
         }
     }
 
-    @Override
     public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned) {
 
         Set result = new HashSet();
@@ -131,7 +130,6 @@ public class NimbusServerApplicationConfig implements ServerApplicationConfig {
         return result;
     }
 
-    @Override
     public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> scanned) {
         // アノテーションは未サポート
         return Collections.emptySet();

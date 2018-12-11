@@ -29,54 +29,52 @@
  * those of the authors and should not be interpreted as representing official
  * policies, either expressed or implied, of the Nimbus Project.
  */
-package jp.ossc.nimbus.service.publish.websocket;
+package jp.ossc.nimbus.service.websocket;
 
 import jp.ossc.nimbus.core.ServiceName;
-import jp.ossc.nimbus.service.websocket.AbstractMessageHandlerFactoryServiceMBean;
-import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
+import jp.ossc.nimbus.service.connection.ConnectionFactory;
+import jp.ossc.nimbus.service.connection.PersistentManager;
 
 /**
- * {@link AbstractPublishMessageHandlerFactoryService}のMBeanインタフェース
+ * {@link DatabaseAuthenticatorService}のMBeanインタフェース
  * <p>
  *
  * @author M.Ishida
  */
-public interface AbstractPublishMessageHandlerFactoryServiceMBean extends AbstractMessageHandlerFactoryServiceMBean {
-
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageDispatcherServiceName();
-
-    /**
-     * メッセージの集配信を管理するMessageDispatcherのサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageDispatcherServiceName(ServiceName name);
+public interface DatabaseAuthenticatorServiceMBean extends AbstractAuthenticatorServiceMBean {
     
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を取得する。
-     *
-     * @return サービス名
-     */
-    public ServiceName getMessageSendExceptionHandlerMappingServiceName();
+    public static final String DEFAULT_WS_TICKET_KEY = "wsTicket";
+    
+    public ServiceName getConnectionFactoryServiceName();
+    
+    public void setConnectionFactoryServiceName(ServiceName serviceName);
+    
+    public ConnectionFactory getConnectionFactory();
+    
+    public void setConnectionFactory(ConnectionFactory factory);
+    
+    public ServiceName getPersistentManagerServiceName();
+    
+    public void setPersistentManagerServiceName(ServiceName serviceName);
+    
+    public PersistentManager getPersistentManager();
+    
+    public void setPersistentManager(PersistentManager manager);
+    
+    public String getLoginSelectSql();
+    
+    public void setLoginSelectSql(String sql);
+    
+    public String getLoginUpdateSql();
 
-    /**
-     * 例外ハンドルマッピングサービス{@link ExceptionHandlerMappingService}のサービス名を設定する。
-     *
-     * @param name サービス名
-     */
-    public void setMessageSendExceptionHandlerMappingServiceName(ServiceName name);
+    public void setLoginUpdateSql(String sql);
+    
+    public String getLogoutUpdateSql();
+    
+    public void setLogoutUpdateSql(String sql);
+    
+    public String getWsTicketKey();
 
-    /**
-     * メッセージ送信件数を取得する。
-     * <p>
-     *
-     * @return メッセージ送信件数
-     */
-    public long getMessageSendCount();
+    public void setWsTicketKey(String key);
     
 }

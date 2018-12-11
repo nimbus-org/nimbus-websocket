@@ -80,75 +80,61 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
 
     protected Object lock = new String();
 
-    @Override
     public ServiceName getPingSendQueueHandlerContainerServiceName() {
         return pingSendQueueHandlerContainerServiceName;
     }
 
-    @Override
     public void setPingSendQueueHandlerContainerServiceName(ServiceName name) {
         pingSendQueueHandlerContainerServiceName = name;
     }
 
-    @Override
     public int getQueueHandlerSize() {
         return queueHandlerSize;
     }
 
-    @Override
     public void setQueueHandlerSize(int size) {
         queueHandlerSize = size;
     }
 
-    @Override
     public String getPingMessage() {
         return pingMessage;
     }
 
-    @Override
     public void setPingMessage(String message) {
         pingMessage = message;
 
     }
 
-    @Override
     public long getPingSendInterval() {
         return pingSendInterval;
     }
 
-    @Override
     public void setPingSendInterval(long interval) {
         pingSendInterval = interval;
     }
 
-    @Override
     public String getPingSendErrorMessageId() {
         return pingSendErrorMessageId;
     }
 
-    @Override
     public void setPingSendErrorMessageId(String messageId) {
         pingSendErrorMessageId = messageId;
     }
     
-    @Override
     public boolean isAllowNoPong() {
         return isAllowNoPong;
     }
 
-    @Override
     public void setAllowNoPong(boolean isAllow) {
         isAllowNoPong = isAllow;
     }
 
-    @Override
     public void createService() throws Exception {
         sessionSet = new HashSet();
         daemon = new Daemon(this);
         daemon.setName("Nimbus WebSocket PingSendAndPongCheckDaemon " + getServiceNameObject());
     }
 
-    @Override
     public void startService() throws Exception {
         if (pingSendQueueHandlerContainerServiceName != null) {
             queue = (QueueHandlerContainer) ServiceManagerFactory.getServiceObject(pingSendQueueHandlerContainerServiceName);
@@ -164,7 +150,6 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         daemon.start();
     }
 
-    @Override
     public void stopService() throws Exception {
         daemon.stop();
         if (queue != null) {
@@ -173,7 +158,6 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         }
     }
 
-    @Override
     public void destroyService() throws Exception {
         daemon = null;
         if (queue != null) {
@@ -181,32 +165,26 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         }
     }
 
-    @Override
     protected Service createServiceInstance() throws Exception {
         return new DefaultKeepAliveHandlerService();
     }
 
-    @Override
     public boolean onStart() {
         return true;
     }
 
-    @Override
     public boolean onStop() {
         return true;
     }
 
-    @Override
     public boolean onSuspend() {
         return true;
     }
 
-    @Override
     public boolean onResume() {
         return true;
     }
 
-    @Override
     public Object provide(DaemonControl ctrl) throws Throwable {
         if (getState() != STARTED) {
             return null;
@@ -254,7 +232,6 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         return list;
     }
 
-    @Override
     public void consume(Object paramObj, DaemonControl ctrl) throws Throwable {
         if (paramObj != null) {
             List list = (List) paramObj;
@@ -264,7 +241,6 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         }
     }
 
-    @Override
     public void garbage() {
     }
 
@@ -309,19 +285,16 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
          */
         protected Session session;
 
-        @Override
-        public void onMessage(PongMessage message) {
+            public void onMessage(PongMessage message) {
             SessionProperties.getSessionProperty(session).setPongReceiveTime(System.currentTimeMillis());
         }
 
-        @Override
-        public void onOpen(Session session, EndpointConfig config) {
+            public void onOpen(Session session, EndpointConfig config) {
             this.session = session;
             regist(session);
         }
 
-        @Override
-        public void onClose(Session session, CloseReason closeReason) {
+            public void onClose(Session session, CloseReason closeReason) {
             unregist(session);
             try {
                 super.stopService();
@@ -329,8 +302,7 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
             }
         }
 
-        @Override
-        public void onError(Session session, Throwable thr) {
+            public void onError(Session session, Throwable thr) {
         }
     }
 
@@ -338,8 +310,7 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
      * Pingメッセージを配信する際に使用するQueueHandlerクラス。
      */
     protected class PingSendQueueHandler implements QueueHandler {
-        @Override
-        public void handleDequeuedObject(Object obj) throws Throwable {
+            public void handleDequeuedObject(Object obj) throws Throwable {
             if (obj == null) {
                 return;
             }
@@ -350,14 +321,12 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
             }
         }
 
-        @Override
-        public boolean handleError(Object obj, Throwable th) throws Throwable {
+            public boolean handleError(Object obj, Throwable th) throws Throwable {
             Session session = (Session) obj;
             return session.isOpen();
         }
 
-        @Override
-        public void handleRetryOver(Object obj, Throwable th) throws Throwable {
+            public void handleRetryOver(Object obj, Throwable th) throws Throwable {
             Session session = (Session) obj;
             if (session.isOpen()) {
                 getLogger().write(pingSendErrorMessageId, SessionProperties.getSessionProperty(session), th);
