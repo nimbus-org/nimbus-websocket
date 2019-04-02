@@ -219,7 +219,7 @@ public class AuthResult {
     public void setUrl(HttpServletRequest req, String paramWebsocketPath) {
         urlSchema = removeSlashAndColon(urlSchema);
         if (urlSchema == null || urlSchema.length() == 0) {
-            urlSchema = "ws";
+            urlSchema = "wss";
         }
         host = removeSlashAndColon(host);
         if (host == null || host.length() == 0) {

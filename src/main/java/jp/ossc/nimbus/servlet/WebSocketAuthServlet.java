@@ -203,6 +203,12 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected static final String INIT_PARAM_NAME_AUTH_RESULT_URL = "ResponseHeaderWebSocketURLKey";
 
     /**
+     * WebSocketのプロトコルを指定する際のキー用の初期化パラメータ名。
+     * <p>
+     */
+    protected static final String INIT_PARAM_NAME_WEBSOCKET_PROTOCOL = "WebSocketProtocol";
+
+    /**
      * リクエストジャーナルのルートステップのキーの初期化パラメータ名。
      * <p>
      */
@@ -255,6 +261,12 @@ public class WebSocketAuthServlet extends HttpServlet {
      * <p>
      */
     protected static final String INIT_PARAM_NAME_EXCEPTION_JOURNAL_KEY = "ExceptionJournalKey";
+
+    /**
+     * WebSocketのプロトコルのデフォルト値。
+     * <p>
+     */
+    protected static final String DEFAULT_WEBSOCKET_PROTOCOL = "wss";
 
     /**
      * 認証結果BeanをRequestパラメータに格納する際のキーのデフォルト値。
@@ -375,6 +387,7 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected String exceptionJournalKey = DEFAULT_EXCEPTION_JOURNAL_KEY;
 
     protected String authRsultKey = DEFAULT_AUTH_RESULT_KEY;
+    protected String webSocketProtocol = DEFAULT_WEBSOCKET_PROTOCOL;
     protected Map responseConverterMap;
     protected Map forwardPathMap;
 
@@ -435,6 +448,11 @@ public class WebSocketAuthServlet extends HttpServlet {
         String initAuthRsultKey = getServletConfig().getInitParameter(INIT_PARAM_NAME_AUTH_RESULT_KEY);
         if (initAuthRsultKey != null && initAuthRsultKey.length() > 0) {
             authRsultKey = initAuthRsultKey;
+        }
+
+        String initwebSocketProtocol = getServletConfig().getInitParameter(INIT_PARAM_NAME_WEBSOCKET_PROTOCOL);
+        if (initwebSocketProtocol != null && initwebSocketProtocol.length() > 0) {
+            webSocketProtocol = initwebSocketProtocol;
         }
 
         String initResponseHeaderWebSocketIdKey = getServletConfig().getInitParameter(INIT_PARAM_NAME_AUTH_RESULT_ID);
@@ -602,21 +620,21 @@ public class WebSocketAuthServlet extends HttpServlet {
                 }
             }
             if(hostSelector != null){
-                if(hostSelector != null){
-                    try{
-                        URI host = (URI)hostSelector.getHostInfo();
-                        if(host != null){
-                            result.setUrlSchema(host.getScheme());
-                            result.setHost(host.getHost());
-                            result.setPort(host.getPort());
-                        }
-                    } catch(Exception e){
-                        result.setResult(false);
-                        if (accessJournal != null) {
-                            accessJournal.addInfo(exceptionJournalKey, e);
-                        }
+                try{
+                    URI host = (URI)hostSelector.getHostInfo();
+                    if(host != null){
+                        result.setUrlSchema(host.getScheme());
+                        result.setHost(host.getHost());
+                        result.setPort(host.getPort());
+                    }
+                } catch(Exception e){
+                    result.setResult(false);
+                    if (accessJournal != null) {
+                        accessJournal.addInfo(exceptionJournalKey, e);
                     }
                 }
+            } else {
+                result.setUrlSchema(webSocketProtocol);
             }
             result.setUrl(req, configWebsocketPath);
             if (accessJournal != null) {
