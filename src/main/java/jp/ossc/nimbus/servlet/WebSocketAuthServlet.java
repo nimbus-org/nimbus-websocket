@@ -33,8 +33,9 @@ package jp.ossc.nimbus.servlet;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.net.InetSocketAddress;
 import java.net.URI;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -59,7 +60,7 @@ import jp.ossc.nimbus.core.ServiceManagerFactory;
 import jp.ossc.nimbus.core.ServiceName;
 import jp.ossc.nimbus.service.journal.Journal;
 import jp.ossc.nimbus.service.journal.editorfinder.EditorFinder;
-import jp.ossc.nimbus.service.keepalive.websocket.WebSocketKeepAliveCheckerService;
+import jp.ossc.nimbus.service.keepalive.KeepAliveChecker;
 import jp.ossc.nimbus.service.sequence.Sequence;
 import jp.ossc.nimbus.service.websocket.AuthResult;
 import jp.ossc.nimbus.service.websocket.AuthenticateException;
@@ -203,12 +204,6 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected static final String INIT_PARAM_NAME_AUTH_RESULT_URL = "ResponseHeaderWebSocketURLKey";
 
     /**
-     * WebSocketのプロトコルを指定する際のキー用の初期化パラメータ名。
-     * <p>
-     */
-    protected static final String INIT_PARAM_NAME_WEBSOCKET_PROTOCOL = "WebSocketProtocol";
-
-    /**
      * リクエストジャーナルのルートステップのキーの初期化パラメータ名。
      * <p>
      */
@@ -261,12 +256,6 @@ public class WebSocketAuthServlet extends HttpServlet {
      * <p>
      */
     protected static final String INIT_PARAM_NAME_EXCEPTION_JOURNAL_KEY = "ExceptionJournalKey";
-
-    /**
-     * WebSocketのプロトコルのデフォルト値。
-     * <p>
-     */
-    protected static final String DEFAULT_WEBSOCKET_PROTOCOL = "wss";
 
     /**
      * 認証結果BeanをRequestパラメータに格納する際のキーのデフォルト値。
@@ -369,7 +358,7 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected EditorFinder editorFinder;
     protected Sequence sequence;
     protected ExceptionHandlerMappingService exceptionHandler;
-    protected WebSocketKeepAliveCheckerService hostSelector;
+    protected KeepAliveChecker hostSelector;
 
     protected String configWebsocketPath;
     protected String responseHeaderWebSocketIdKey = DEFAULT_AUTH_RESULT_ID_HEADER_KEY;
@@ -387,7 +376,6 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected String exceptionJournalKey = DEFAULT_EXCEPTION_JOURNAL_KEY;
 
     protected String authRsultKey = DEFAULT_AUTH_RESULT_KEY;
-    protected String webSocketProtocol = DEFAULT_WEBSOCKET_PROTOCOL;
     protected Map responseConverterMap;
     protected Map forwardPathMap;
 
@@ -432,7 +420,7 @@ public class WebSocketAuthServlet extends HttpServlet {
 
         final ServiceName hostSelectorServiceName = getInitialParameterServiceName(INIT_PARAM_NAME_HOST_SELECTOR_SERVICE_NAME);
         if (hostSelectorServiceName != null) {
-            hostSelector = (WebSocketKeepAliveCheckerService) ServiceManagerFactory.getServiceObject(hostSelectorServiceName);
+            hostSelector = (KeepAliveChecker) ServiceManagerFactory.getServiceObject(hostSelectorServiceName);
         }
 
         String converterMapDefStr = getServletConfig().getInitParameter(INIT_PARAM_NAME_CONVERTER_MAP_DEF);
@@ -448,11 +436,6 @@ public class WebSocketAuthServlet extends HttpServlet {
         String initAuthRsultKey = getServletConfig().getInitParameter(INIT_PARAM_NAME_AUTH_RESULT_KEY);
         if (initAuthRsultKey != null && initAuthRsultKey.length() > 0) {
             authRsultKey = initAuthRsultKey;
-        }
-
-        String initwebSocketProtocol = getServletConfig().getInitParameter(INIT_PARAM_NAME_WEBSOCKET_PROTOCOL);
-        if (initwebSocketProtocol != null && initwebSocketProtocol.length() > 0) {
-            webSocketProtocol = initwebSocketProtocol;
         }
 
         String initResponseHeaderWebSocketIdKey = getServletConfig().getInitParameter(INIT_PARAM_NAME_AUTH_RESULT_ID);
@@ -621,11 +604,23 @@ public class WebSocketAuthServlet extends HttpServlet {
             }
             if(hostSelector != null){
                 try{
-                    URI host = (URI)hostSelector.getHostInfo();
-                    if(host != null){
-                        result.setUrlSchema(host.getScheme());
-                        result.setHost(host.getHost());
-                        result.setPort(host.getPort());
+                    Object hostInfo = hostSelector.getHostInfo();
+                    if(hostInfo instanceof URI) {
+                        URI uri = (URI)hostInfo;
+                        result.setUrlSchema(uri.getScheme());
+                        result.setHost(uri.getHost());
+                        result.setPort(uri.getPort());
+                    } else if(hostInfo instanceof InetSocketAddress) {
+                        InetSocketAddress address = (InetSocketAddress)hostInfo;
+                        if(req.isSecure()) {
+                            result.setUrlSchema("wss");
+                        } else {
+                            result.setUrlSchema("ws");
+                        }
+                        result.setHost(address.getAddress().getHostAddress());
+                        result.setPort(address.getPort());
+                    } else {
+                        throw new UnsupportedOperationException("HostInfo is not support response. HostInfo=" + hostInfo);
                     }
                 } catch(Exception e){
                     result.setResult(false);
@@ -634,7 +629,13 @@ public class WebSocketAuthServlet extends HttpServlet {
                     }
                 }
             } else {
-                result.setUrlSchema(webSocketProtocol);
+                if(req.isSecure()) {
+                    result.setUrlSchema("wss");
+                } else {
+                    result.setUrlSchema("ws");
+                }
+                result.setHost(req.getLocalAddr());
+                result.setPort(req.getLocalPort());
             }
             result.setUrl(req, configWebsocketPath);
             if (accessJournal != null) {
