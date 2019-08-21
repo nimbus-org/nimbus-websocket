@@ -4,7 +4,7 @@
     <groupId>com.github.nimbus-org</groupId>
     <artifactId>nimbus-websocket</artifactId>
     <packaging>jar</packaging>
-    <version>SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
     <name>nimbus</name>
     <description>Nimbus Framework</description>
     <url>https://github.com/nimbus-org/nimbus</url>
@@ -110,7 +110,7 @@
         <dependency>
             <groupId>com.github.nimbus-org</groupId>
             <artifactId>nimbus</artifactId>
-            <version>SNAPSHOT</version>
+            <version>1.2.5-SNAPSHOT</version>
         </dependency>
         
         <dependency>
@@ -126,6 +126,7 @@
         <finalName>${artifactId}-${timestamp}</finalName>
 -->
         <finalName>${artifactId}-${version}</finalName>
+        
         <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
         <testSourceDirectory>${basedir}/src/test/java</testSourceDirectory>
         <resources>

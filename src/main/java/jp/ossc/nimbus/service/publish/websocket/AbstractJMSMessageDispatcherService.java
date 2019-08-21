@@ -49,6 +49,7 @@ import jp.ossc.nimbus.service.queue.DistributedQueueHandlerContainerService;
 import jp.ossc.nimbus.service.queue.DistributedQueueSelector;
 import jp.ossc.nimbus.service.queue.QueueHandler;
 import jp.ossc.nimbus.service.queue.QueueHandlerContainer;
+import jp.ossc.nimbus.service.websocket.ExceptionHandlerMappingService;
 
 /**
  * JMSメッセージを受信するためのメッセージディスパッチャーサービス抽象クラス。

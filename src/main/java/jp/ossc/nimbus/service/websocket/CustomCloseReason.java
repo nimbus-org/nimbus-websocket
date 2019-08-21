@@ -50,7 +50,8 @@ public class CustomCloseReason extends CloseReason {
         MAX_CLIENT_SIZE_OVER(4000), // 最大クライアント数オーバー
         HANDSHAKE_AUTH_FAILED(4001), // ハンドシェイク認証エラー
         SERVER_ACCESS_DENIED(4002), // サーバアクセス拒否
-        SYSTEM_FORCED_DISCONNECTION(4999), ;// システム強制切断
+        SYSTEM_FORCED_DISCONNECTION(4900),// システム強制切断
+        SERVER_SYSTEM_ERROR(4999); //サーバ内システムエラー 
 
         private int code;
 
@@ -66,8 +67,10 @@ public class CustomCloseReason extends CloseReason {
                 return CloseCodes.HANDSHAKE_AUTH_FAILED;
             case 4002:
                 return CloseCodes.SERVER_ACCESS_DENIED;
-            case 4999:
+            case 4900:
                 return CloseCodes.SYSTEM_FORCED_DISCONNECTION;
+            case 4999:
+                return CloseCodes.SERVER_SYSTEM_ERROR;
             default:
                 throw new IllegalArgumentException("Invalid close code: [" + code + "]");
             }

@@ -105,7 +105,7 @@ public abstract class AbstractPublishMessageHandlerFactoryService extends Abstra
 
         private static final long serialVersionUID = 5053359912274095886L;
 
-        protected void onOpenProcess(Session session, EndpointConfig config) {
+        protected void onOpenProcess(Session session, EndpointConfig config) throws Exception {
             dispatcher.addMessageSender(this);
         }
 
@@ -116,7 +116,7 @@ public abstract class AbstractPublishMessageHandlerFactoryService extends Abstra
         protected void onErrorProcess(Session session, Throwable thr) {
         }
 
-        protected abstract void onMessageProcess(String message);
+        protected abstract void onMessageProcess(String message) throws Exception ;
 
         public void sendMessage(Object msg) {
             try {

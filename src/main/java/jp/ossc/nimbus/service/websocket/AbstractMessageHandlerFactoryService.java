@@ -258,20 +258,32 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
         
         protected Session session;
 
-            public void onOpen(Session session, EndpointConfig config) {
+        public void onOpen(Session session, EndpointConfig config) {
             this.session = session;
-            onOpenProcess(session, config);
+            try {
+                onOpenProcess(session, config);
+            } catch(Exception e) {
+                getLogger().write("WS___00001", SessionProperties.getSessionProperty(session), e);
+                CloseReason reason = new CustomCloseReason(CustomCloseReason.CloseCodes.SERVER_SYSTEM_ERROR, "onOpen");
+                try {
+                    session.close(reason);
+                } catch(IOException e2) {}
+            }
         }
 
-            public void onClose(Session session, CloseReason closeReason) {
-            onCloseProcess(session, closeReason);
+        public void onClose(Session session, CloseReason closeReason) {
+            try {
+                onCloseProcess(session, closeReason);
+            } catch(Exception e) {
+                getLogger().write("WS___00001", SessionProperties.getSessionProperty(session), e);
+            }
             try {
                 super.stopService();
             } catch (Exception e) {
             }
         }
 
-            public void onError(Session session, Throwable thr) {
+        public void onError(Session session, Throwable thr) {
             onErrorProcess(session, thr);
         }
 
@@ -308,11 +320,11 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
                 onMessageProcess(message);
             } catch(UnsupportedEncodingException e){
                 // Nop startService でチェックしているので発生しない
-            } catch (RuntimeException e) {
+            } catch (Exception e) {
                 if (accessJournal != null) {
                     accessJournal.addInfo(exceptionJournalKey, e);
                 }
-                throw e;
+                getLogger().write("WS___00001", SessionProperties.getSessionProperty(session), e);
             } finally {
                 if (accessJournal != null) {
                     accessJournal.addInfo(requestMessageJournalKey, message);
@@ -328,7 +340,7 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
          * @param session WebSocketセッション
          * @param config EndpointConfig
          */
-        protected abstract void onOpenProcess(Session session, EndpointConfig config);
+        protected abstract void onOpenProcess(Session session, EndpointConfig config) throws Exception;
 
         /**
          * セッションクローズ時のイベント処理。
@@ -337,7 +349,7 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
          * @param session WebSocketセッション
          * @param closeReason CloseReason
          */
-        protected abstract void onCloseProcess(Session session, CloseReason closeReason);
+        protected abstract void onCloseProcess(Session session, CloseReason closeReason) throws Exception;
 
         /**
          * エラー発生時のイベント処理。
@@ -354,7 +366,7 @@ public abstract class AbstractMessageHandlerFactoryService extends ServiceFactor
          *
          * @param message メセージ文字列
          */
-        protected abstract void onMessageProcess(String message);
+        protected abstract void onMessageProcess(String message) throws Exception;
     }
 
 }
