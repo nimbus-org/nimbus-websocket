@@ -31,7 +31,6 @@
  */
 package jp.ossc.nimbus.service.websocket;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -64,59 +63,59 @@ import jp.ossc.nimbus.service.queue.QueueHandlerContainerService;
  * @author M.Ishida
  */
 public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase implements DaemonRunnable, DefaultPingPongHandlerServiceMBean {
-
+    
     protected ServiceName pingSendQueueHandlerContainerServiceName;
-
+    
     protected int queueHandlerSize = DEFAULT_QUEUE_SIZE;
     protected String pingMessage = DEFAULT_PING_MESSAGE;
     protected long pingSendInterval = DEFAULT_PING_SEND_INTERVAL;
     protected String pingSendErrorMessageId = DEFAULT_PING_SEND_ERROR_MESSAGE_ID;
     protected boolean isAllowNoPong = DEFAULT_ALLOW_NO_PONG;
-
+    
     protected QueueHandlerContainer queue;
     protected Daemon daemon;
     protected Set sessionSet;
     protected ByteBuffer pingByteBuffer;
-
+    
     protected Object lock = new String();
-
+    
     public ServiceName getPingSendQueueHandlerContainerServiceName() {
         return pingSendQueueHandlerContainerServiceName;
     }
-
+    
     public void setPingSendQueueHandlerContainerServiceName(ServiceName name) {
         pingSendQueueHandlerContainerServiceName = name;
     }
-
+    
     public int getQueueHandlerSize() {
         return queueHandlerSize;
     }
-
+    
     public void setQueueHandlerSize(int size) {
         queueHandlerSize = size;
     }
-
+    
     public String getPingMessage() {
         return pingMessage;
     }
-
+    
     public void setPingMessage(String message) {
         pingMessage = message;
-
+        
     }
-
+    
     public long getPingSendInterval() {
         return pingSendInterval;
     }
-
+    
     public void setPingSendInterval(long interval) {
         pingSendInterval = interval;
     }
-
+    
     public String getPingSendErrorMessageId() {
         return pingSendErrorMessageId;
     }
-
+    
     public void setPingSendErrorMessageId(String messageId) {
         pingSendErrorMessageId = messageId;
     }
@@ -124,21 +123,21 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
     public boolean isAllowNoPong() {
         return isAllowNoPong;
     }
-
+    
     public void setAllowNoPong(boolean isAllow) {
         isAllowNoPong = isAllow;
     }
-
+    
     public void createService() throws Exception {
         sessionSet = new HashSet();
         daemon = new Daemon(this);
         daemon.setName("Nimbus WebSocket PingSendAndPongCheckDaemon " + getServiceNameObject());
     }
-
+    
     public void startService() throws Exception {
-        if (pingSendQueueHandlerContainerServiceName != null) {
+        if(pingSendQueueHandlerContainerServiceName != null){
             queue = (QueueHandlerContainer) ServiceManagerFactory.getServiceObject(pingSendQueueHandlerContainerServiceName);
-        } else {
+        }else{
             QueueHandlerContainerService qhc = new QueueHandlerContainerService();
             qhc.setQueueHandlerSize(queueHandlerSize);
             qhc.setMaxRetryCount(3);
@@ -149,78 +148,78 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         queue.accept();
         daemon.start();
     }
-
+    
     public void stopService() throws Exception {
         daemon.stop();
-        if (queue != null) {
+        if(queue != null){
             queue.release();
             queue.stop();
         }
     }
-
+    
     public void destroyService() throws Exception {
         daemon = null;
-        if (queue != null) {
+        if(queue != null){
             queue = null;
         }
     }
-
+    
     protected Service createServiceInstance() throws Exception {
         return new DefaultKeepAliveHandlerService();
     }
-
+    
     public boolean onStart() {
         return true;
     }
-
+    
     public boolean onStop() {
         return true;
     }
-
+    
     public boolean onSuspend() {
         return true;
     }
-
+    
     public boolean onResume() {
         return true;
     }
-
+    
     public Object provide(DaemonControl ctrl) throws Throwable {
-        if (getState() != STARTED) {
+        if(getState() != STARTED){
             return null;
         }
-        try {
+        try{
             ctrl.sleep(pingSendInterval, false);
-        } catch (InterruptedException e) {
-
+        }catch (InterruptedException e){
+            
         }
         List list = new ArrayList();
         Set tempSet;
-        synchronized (lock) {
+        synchronized (lock){
             tempSet = new HashSet(sessionSet);
         }
         Iterator itr = tempSet.iterator();
-        while (itr.hasNext()) {
+        while (itr.hasNext()){
             Session session = (Session) itr.next();
-            if (session != null && session.isOpen()) {
+            if(session != null && session.isOpen()){
                 SessionProperties prop = SessionProperties.getSessionProperty(session);
-                if (!isPongReceive(prop)) {
+                if(!isPongReceive(prop)){
                     CloseReason reason = new CloseReason(CloseReason.CloseCodes.GOING_AWAY, "PongReceiveCheck");
-                    try {
-                        if (session.isOpen()) {
+                    try{
+                        if(session.isOpen()){
                             session.close(reason);
                         }
-                    } catch (Exception e) {
+                    }catch (Exception e){
                     }
                     continue;
                 }
-                if (prop != null) {
-                    if (prop.getPingRequestTime() != -1) {
-                        if (prop.getPingSendTime() != -1) {
-                            if (prop.getPingRequestTime() > prop.getPingSendTime()) {
+                if(prop != null){
+                    if(prop.getPingRequestTime() != -1){
+                        if(prop.getPingSendTime() != -1){
+                            if(prop.getPingRequestTime() > prop.getPingSendTime()){
                                 continue;
                             }
-                        } else {
+                        }else{
                             continue;
                         }
                     }
@@ -231,107 +230,107 @@ public class DefaultPingPongHandlerService extends ServiceFactoryServiceBase imp
         }
         return list;
     }
-
+    
     public void consume(Object paramObj, DaemonControl ctrl) throws Throwable {
-        if (paramObj != null) {
+        if(paramObj != null){
             List list = (List) paramObj;
-            for (int i = 0; i < list.size(); i++) {
+            for(int i = 0; i < list.size(); i++){
                 queue.push(list.get(i));
             }
         }
     }
-
+    
     public void garbage() {
     }
-
+    
     /**
      * SessionをPing/Pong管理対象に追加する。
      *
      * @param session WebSocketセッション
      */
     protected void regist(Session session) {
-        synchronized (lock) {
+        synchronized (lock){
             sessionSet.add(session);
         }
     }
-
+    
     /**
      * SessionをPing/Pong管理対象から除外する。
      *
      * @param session WebSocketセッション
      */
     protected void unregist(Session session) {
-        synchronized (lock) {
+        synchronized (lock){
             sessionSet.remove(session);
         }
     }
-
+    
     private boolean isPongReceive(SessionProperties prop) {
-        if (isAllowNoPong) {
+        if(isAllowNoPong){
             return true;
         }
-        if (prop != null && prop.getPingSendTime() != -1 && (prop.getPingSendTime() > prop.getPongReceiveTime())) {
+        if(prop != null && prop.getPingSendTime() != -1 && (prop.getPingSendTime() > prop.getPongReceiveTime())){
             return false;
         }
         return true;
-
+        
     }
-
+    
     public class DefaultKeepAliveHandlerService extends ServiceBase implements SessionMessageHandler, MessageHandler.Whole<PongMessage> {
-
+        
         /**
          * WebsocketのSession。
          * <p>
          */
         protected Session session;
-
-            public void onMessage(PongMessage message) {
+        
+        public void onMessage(PongMessage message) {
             SessionProperties.getSessionProperty(session).setPongReceiveTime(System.currentTimeMillis());
         }
-
-            public void onOpen(Session session, EndpointConfig config) {
+        
+        public void onOpen(Session session, EndpointConfig config) {
             this.session = session;
             regist(session);
         }
-
-            public void onClose(Session session, CloseReason closeReason) {
+        
+        public void onClose(Session session, CloseReason closeReason) {
             unregist(session);
-            try {
+            try{
                 super.stopService();
-            } catch (Exception e) {
+            }catch (Exception e){
             }
         }
-
-            public void onError(Session session, Throwable thr) {
+        
+        public void onError(Session session, Throwable thr) {
         }
     }
-
+    
     /**
      * Pingメッセージを配信する際に使用するQueueHandlerクラス。
      */
     protected class PingSendQueueHandler implements QueueHandler {
-            public void handleDequeuedObject(Object obj) throws Throwable {
-            if (obj == null) {
+        public void handleDequeuedObject(Object obj) throws Throwable {
+            if(obj == null){
                 return;
             }
             Session session = (Session) obj;
-            if (session.isOpen()) {
+            if(session.isOpen()){
                 SessionProperties.getSessionProperty(session).setPingSendTime(System.currentTimeMillis());
                 session.getBasicRemote().sendPing(pingByteBuffer);
             }
         }
-
-            public boolean handleError(Object obj, Throwable th) throws Throwable {
+        
+        public boolean handleError(Object obj, Throwable th) throws Throwable {
             Session session = (Session) obj;
             return session.isOpen();
         }
-
-            public void handleRetryOver(Object obj, Throwable th) throws Throwable {
+        
+        public void handleRetryOver(Object obj, Throwable th) throws Throwable {
             Session session = (Session) obj;
-            if (session.isOpen()) {
+            if(session.isOpen()){
                 getLogger().write(pingSendErrorMessageId, SessionProperties.getSessionProperty(session), th);
             }
         }
     }
-
+    
 }
