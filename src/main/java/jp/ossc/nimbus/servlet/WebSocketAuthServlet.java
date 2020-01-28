@@ -258,6 +258,12 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected static final String INIT_PARAM_NAME_EXCEPTION_JOURNAL_KEY = "ExceptionJournalKey";
 
     /**
+     * URLスキーマの初期化パラメータ名。
+     * <p>
+     */
+    protected static final String INIT_PARAM_NAME_URL_SCHEMA = "UrlSchema";
+
+    /**
      * 認証結果BeanをRequestパラメータに格納する際のキーのデフォルト値。
      * <p>
      */
@@ -361,6 +367,7 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected KeepAliveChecker hostSelector;
 
     protected String configWebsocketPath;
+    protected String urlSchema;
     protected String responseHeaderWebSocketIdKey = DEFAULT_AUTH_RESULT_ID_HEADER_KEY;
     protected String responseHeaderWebSocketTicketKey = DEFAULT_AUTH_RESULT_TICKET_HEADER_KEY;
     protected String responseHeaderWebSocketAuthResultKey = DEFAULT_AUTH_RESULT_AUTH_RESULT_HEADER_KEY;
@@ -506,6 +513,10 @@ public class WebSocketAuthServlet extends HttpServlet {
             exceptionJournalKey = initExceptionJournalKey;
         }
 
+        String initUrlSchema = getServletConfig().getInitParameter(INIT_PARAM_NAME_URL_SCHEMA);
+        if (initUrlSchema != null && initUrlSchema.length() > 0) {
+            urlSchema = initUrlSchema;
+        }
     }
 
     public void destroy() {
@@ -607,15 +618,23 @@ public class WebSocketAuthServlet extends HttpServlet {
                     Object hostInfo = hostSelector.getHostInfo();
                     if(hostInfo instanceof URI) {
                         URI uri = (URI)hostInfo;
-                        result.setUrlSchema(uri.getScheme());
+                        if(urlSchema != null) {
+                            result.setUrlSchema(urlSchema);
+                        } else {
+                            result.setUrlSchema(uri.getScheme());
+                        }
                         result.setHost(uri.getHost());
                         result.setPort(uri.getPort());
                     } else if(hostInfo instanceof InetSocketAddress) {
                         InetSocketAddress address = (InetSocketAddress)hostInfo;
-                        if(req.isSecure()) {
-                            result.setUrlSchema("wss");
+                        if(urlSchema != null) {
+                            result.setUrlSchema(urlSchema);
                         } else {
-                            result.setUrlSchema("ws");
+                            if(req.isSecure()) {
+                                result.setUrlSchema("wss");
+                            } else {
+                                result.setUrlSchema("ws");
+                            }
                         }
                         result.setHost(address.getAddress().getHostAddress());
                         result.setPort(address.getPort());
@@ -629,10 +648,14 @@ public class WebSocketAuthServlet extends HttpServlet {
                     }
                 }
             } else {
-                if(req.isSecure()) {
-                    result.setUrlSchema("wss");
+                if(urlSchema != null) {
+                    result.setUrlSchema(urlSchema);
                 } else {
-                    result.setUrlSchema("ws");
+                    if(req.isSecure()) {
+                        result.setUrlSchema("wss");
+                    } else {
+                        result.setUrlSchema("ws");
+                    }
                 }
                 result.setHost(req.getLocalAddr());
                 result.setPort(req.getLocalPort());
