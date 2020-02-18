@@ -264,6 +264,12 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected static final String INIT_PARAM_NAME_URL_SCHEMA = "UrlSchema";
 
     /**
+     * HttpResponseHeaderに設定するCache-Control用の初期化パラメータ名。
+     * <p>
+     */
+    protected static final String INIT_PARAM_NAME_CACHE_CONTRO = "Cache-Control";
+
+    /**
      * 認証結果BeanをRequestパラメータに格納する際のキーのデフォルト値。
      * <p>
      */
@@ -368,6 +374,7 @@ public class WebSocketAuthServlet extends HttpServlet {
 
     protected String configWebsocketPath;
     protected String urlSchema;
+    protected String responseHeaderCacheControl;
     protected String responseHeaderWebSocketIdKey = DEFAULT_AUTH_RESULT_ID_HEADER_KEY;
     protected String responseHeaderWebSocketTicketKey = DEFAULT_AUTH_RESULT_TICKET_HEADER_KEY;
     protected String responseHeaderWebSocketAuthResultKey = DEFAULT_AUTH_RESULT_AUTH_RESULT_HEADER_KEY;
@@ -517,6 +524,12 @@ public class WebSocketAuthServlet extends HttpServlet {
         if (initUrlSchema != null && initUrlSchema.length() > 0) {
             urlSchema = initUrlSchema;
         }
+        
+        String initCacheControl = getServletConfig().getInitParameter(INIT_PARAM_NAME_CACHE_CONTRO);
+        if (initCacheControl != null && initCacheControl.length() > 0) {
+            responseHeaderCacheControl = initCacheControl;
+        }
+        
     }
 
     public void destroy() {
@@ -663,6 +676,9 @@ public class WebSocketAuthServlet extends HttpServlet {
             result.setUrl(req, configWebsocketPath);
             if (accessJournal != null) {
                 accessJournal.addInfo(authResultJournalKey, result);
+            }
+            if(responseHeaderCacheControl != null) {
+                res.setHeader("Cache-Control", responseHeaderCacheControl);
             }
             if (forwardPathMap != null) {
                 if (forward(req, res, result)) {
