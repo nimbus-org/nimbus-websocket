@@ -649,7 +649,14 @@ public class WebSocketAuthServlet extends HttpServlet {
                                 result.setUrlSchema("ws");
                             }
                         }
-                        result.setHost(address.getAddress().getHostAddress());
+                        String host = address.getHostName();
+                        if(host == null) {
+                            host = address.getAddress().getHostName();
+                            if(host == null) {
+                                address.getAddress().getHostAddress();
+                            }
+                        }
+                        result.setHost(host);
                         result.setPort(address.getPort());
                     } else {
                         throw new UnsupportedOperationException("HostInfo is not support response. HostInfo=" + hostInfo);
@@ -670,8 +677,8 @@ public class WebSocketAuthServlet extends HttpServlet {
                         result.setUrlSchema("ws");
                     }
                 }
-                result.setHost(req.getLocalAddr());
-                result.setPort(req.getLocalPort());
+                result.setHost(req.getServerName());
+                result.setPort(req.getServerPort());
             }
             result.setUrl(req, configWebsocketPath);
             if (accessJournal != null) {
