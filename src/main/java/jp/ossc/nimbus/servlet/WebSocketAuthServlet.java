@@ -649,12 +649,14 @@ public class WebSocketAuthServlet extends HttpServlet {
                                 result.setUrlSchema("ws");
                             }
                         }
-                        String host = address.getHostName();
-                        if(host == null) {
-                            host = address.getAddress().getHostName();
-                            if(host == null) {
-                                address.getAddress().getHostAddress();
+                        String host = address.toString();
+                        if(host.startsWith("/")) {
+                            host = host.substring(1);
+                            if(host.indexOf(":") != -1) {
+                                host = host.substring(0, host.indexOf(":"));
                             }
+                        } else {
+                            host = address.getHostName();
                         }
                         result.setHost(host);
                         result.setPort(address.getPort());
