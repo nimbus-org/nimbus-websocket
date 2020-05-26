@@ -54,6 +54,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import jp.ossc.nimbus.beans.PropertyAccess;
 import jp.ossc.nimbus.beans.ServiceNameEditor;
 import jp.ossc.nimbus.beans.StringArrayEditor;
 import jp.ossc.nimbus.core.ServiceManagerFactory;
@@ -264,6 +265,12 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected static final String INIT_PARAM_NAME_URL_SCHEMA = "UrlSchema";
 
     /**
+     * リモートIPの初期化パラメータ名。
+     * <p>
+     */
+    protected static final String REMOTE_IP_PROPERTY = "RemoteIpProperty";
+
+    /**
      * HttpResponseHeaderに設定するCache-Control用の初期化パラメータ名。
      * <p>
      */
@@ -388,10 +395,12 @@ public class WebSocketAuthServlet extends HttpServlet {
     protected String parameterJournalKey = DEFAULT_PARAMETER_JOURNAL_KEY;
     protected String authResultJournalKey = DEFAULT_AUTH_RESULT_JOURNAL_KEY;
     protected String exceptionJournalKey = DEFAULT_EXCEPTION_JOURNAL_KEY;
+    protected String remoteIpProperty;
 
     protected String authRsultKey = DEFAULT_AUTH_RESULT_KEY;
     protected Map responseConverterMap;
     protected Map forwardPathMap;
+    protected PropertyAccess propertyAccess;
 
     /**
      * 初期化処理
@@ -525,6 +534,12 @@ public class WebSocketAuthServlet extends HttpServlet {
             urlSchema = initUrlSchema;
         }
         
+        String initRemoteIpProperty = getServletConfig().getInitParameter(REMOTE_IP_PROPERTY);
+        if (initRemoteIpProperty != null && initRemoteIpProperty.length() > 0) {
+            remoteIpProperty = initRemoteIpProperty;
+            propertyAccess = new PropertyAccess();
+        }
+        
         String initCacheControl = getServletConfig().getInitParameter(INIT_PARAM_NAME_CACHE_CONTRO);
         if (initCacheControl != null && initCacheControl.length() > 0) {
             responseHeaderCacheControl = initCacheControl;
@@ -613,7 +628,15 @@ public class WebSocketAuthServlet extends HttpServlet {
                     headers.put(headerName, req.getHeader(headerName));
                 }
                 accessJournal.addInfo(headerJournalKey, headers);
-                accessJournal.addInfo(ipJournalKey, req.getRemoteAddr());
+                String remoteAddress = req.getRemoteAddr();
+                if(remoteIpProperty != null) {
+                    try {
+                        remoteAddress = remoteIpProperty == null ? req.getRemoteAddr() : (String)propertyAccess.get(req, remoteIpProperty);
+                    } catch(Exception ex) {
+                        // NOP
+                    }
+                }
+                accessJournal.addInfo(ipJournalKey, remoteAddress);
                 accessJournal.addInfo(portJournalKey, req.getRemotePort());
                 accessJournal.addInfo(pathJournalKey, req.getRequestURI());
             }
