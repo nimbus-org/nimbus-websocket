@@ -646,7 +646,7 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
     }
 
     public Comparable getUsage() {
-        return new Double((double) getClientSize() / (double) getMaxClientSize());
+        return getMaxClientSize() < 0 ? new Double(getClientSize()) : new Double((double) getClientSize() / (double) getMaxClientSize());
     }
 
 }
