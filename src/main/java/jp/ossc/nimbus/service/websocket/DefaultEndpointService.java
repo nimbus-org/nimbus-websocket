@@ -472,11 +472,13 @@ public class DefaultEndpointService extends Endpoint implements ServiceBaseSuppo
 
     public void stopService() throws Exception {
         if(sessionSet != null){
-            Iterator it = sessionSet.iterator();
-            while (it.hasNext()) {
-                Session session = (Session) it.next();
-                if(session.isOpen()){
-                    session.close();
+            synchronized (sessionSet) {
+                Iterator it = sessionSet.iterator();
+                while (it.hasNext()) {
+                    Session session = (Session) it.next();
+                    if(session.isOpen()){
+                        session.close();
+                    }
                 }
             }
         }
